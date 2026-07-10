@@ -1,0 +1,12 @@
+[
+    {
+        "subject": "Employees",
+        "action": "rotate",
+        "object": "passwords",
+        "condition": "",
+        "frequency": "every 90 days",
+        "strength": "Mandatory",
+        "topic": "Password Rotation Policy",
+        "confidence": 1.0
+    }
+]

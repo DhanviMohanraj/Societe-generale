@@ -4,11 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
 from app.api.upload import router as upload_router
+from app.api.obligations import router as obligations_router
 
 # Initialize the FastAPI application
 app = FastAPI(
     title="AI-powered Policy Conflict & Staleness Detector",
-    description="FastAPI Backend for detecting policy conflicts and staleness (Module 1).",
+    description="FastAPI Backend for detecting policy conflicts and staleness (Module 1 & 2).",
     version="1.0.0"
 )
 
@@ -24,6 +25,7 @@ app.add_middleware(
 # Register routers
 app.include_router(health_router)
 app.include_router(upload_router)
+app.include_router(obligations_router)
 
 # Startup event to ensure uploads directory exists
 @app.on_event("startup")

@@ -1,0 +1,80 @@
+import os
+import json
+
+# Setup output paths relative to the backend/ folder
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+OUTPUTS_DIR = os.path.join(BASE_DIR, "outputs")
+TEXT_DIR = os.path.join(OUTPUTS_DIR, "extracted_text")
+JSON_DIR = os.path.join(OUTPUTS_DIR, "obligations")
+
+# Auto-create the outputs structure on module load
+os.makedirs(TEXT_DIR, exist_ok=True)
+os.makedirs(JSON_DIR, exist_ok=True)
+
+def get_text_path(filename: str) -> str:
+    """Returns the absolute path for the extracted text file."""
+    base_name = os.path.splitext(filename)[0]
+    return os.path.join(TEXT_DIR, f"{base_name}.txt")
+
+def get_json_path(filename: str) -> str:
+    """Returns the absolute path for the obligation JSON file."""
+    base_name = os.path.splitext(filename)[0]
+    return os.path.join(JSON_DIR, f"{base_name}.json")
+
+def check_text_exists(filename: str) -> bool:
+    """Checks if the cleaned text file already exists."""
+    return os.path.exists(get_text_path(filename))
+
+def check_json_exists(filename: str) -> bool:
+    """Checks if the obligation JSON file already exists."""
+    return os.path.exists(get_json_path(filename))
+
+def save_clean_text(filename: str, text: str, overwrite: bool = False) -> str:
+    """
+    Saves cleaned text to outputs/extracted_text/{filename}.txt
+    
+    Returns:
+        str: Relative path to the saved file from the backend/ directory.
+    """
+    path = get_text_path(filename)
+    if os.path.exists(path) and not overwrite:
+        raise FileExistsError(f"Cleaned text output already exists: {path}")
+        
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+        
+    return os.path.relpath(path, BASE_DIR).replace("\\", "/")
+
+def save_json(filename: str, data: list[dict], overwrite: bool = False) -> str:
+    """
+    Saves parsed JSON list of obligations to outputs/obligations/{filename}.json
+    
+    Returns:
+        str: Relative path to the saved file from the backend/ directory.
+    """
+    path = get_json_path(filename)
+    if os.path.exists(path) and not overwrite:
+        raise FileExistsError(f"JSON obligation output already exists: {path}")
+        
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+        
+    return os.path.relpath(path, BASE_DIR).replace("\\", "/")
+
+def load_clean_text(filename: str) -> str:
+    """Loads cleaned text content from output storage."""
+    path = get_text_path(filename)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Cleaned text file not found: {path}")
+        
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+def load_json(filename: str) -> list[dict]:
+    """Loads obligation JSON content from output storage."""
+    path = get_json_path(filename)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Obligation JSON file not found: {path}")
+        
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
