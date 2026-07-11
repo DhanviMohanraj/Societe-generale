@@ -16,10 +16,11 @@ logger = logging.getLogger(__name__)
 # Configure local logging formatting if needed
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Upload directory reference
+# Upload and sample policy directory references
 UPLOADS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "uploads"))
+SAMPLE_POLICIES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "sample_policies"))
 
-@router.post("/extract-obligations/{filename}", status_code=status.HTTP_200_OK)
+@router.post("/extract-obligations/{filename:path}", status_code=status.HTTP_200_OK)
 def extract_obligations_route(
     filename: str,
     force: bool = Query(default=False, description="Force extraction and overwrite existing outputs.")
@@ -30,14 +31,12 @@ def extract_obligations_route(
     queries the local Qwen LLM, validates output, and saves the output files locally.
     Uses caching unless force=True.
     """
-    # 1. Sanitize filename to prevent directory traversal
+    # 1. Auto-append .pdf extension if omitted by the user
+    if not filename.lower().endswith(".pdf"):
+        filename = f"{filename}.pdf"
+
+    # Sanitize filename to prevent directory traversal
     sanitized_filename = os.path.basename(filename)
-    if sanitized_filename != filename or not filename.lower().endswith(".pdf"):
-        logger.error(f"Invalid or unsafe filename requested: {filename}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid filename: Filename must be a simple PDF name without directory traversal paths."
-        )
 
     # 2. Check if clean text and obligations outputs already exist (caching)
     if not force and storage_service.check_json_exists(sanitized_filename) and storage_service.check_text_exists(sanitized_filename):
@@ -62,14 +61,18 @@ def extract_obligations_route(
         except Exception as e:
             logger.warning(f"Error loading cached files for {sanitized_filename}: {str(e)}. Proceeding with re-extraction.")
 
-    # 3. Locate PDF
+    # 3. Locate PDF (check uploads first, then sample_policies)
     pdf_path = os.path.join(UPLOADS_DIR, sanitized_filename)
     if not os.path.exists(pdf_path):
-        logger.error(f"PDF file not found: {pdf_path}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"The file '{sanitized_filename}' was not found in uploads. Please upload it first."
-        )
+        sample_path = os.path.join(SAMPLE_POLICIES_DIR, sanitized_filename)
+        if os.path.exists(sample_path):
+            pdf_path = sample_path
+        else:
+            logger.error(f"PDF file not found in uploads or sample_policies: {sanitized_filename}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"The file '{sanitized_filename}' was not found in uploads or sample_policies."
+            )
     logger.info("PDF Loaded")
 
     # 4. Extract Text
