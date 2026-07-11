@@ -7,4 +7,5 @@ sentence-transformers
 torch
 numpy
 faiss-cpu
+networkx
 

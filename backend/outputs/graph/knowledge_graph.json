@@ -1,0 +1,961 @@
+{
+    "nodes": [
+        {
+            "node_id": "POL-003",
+            "node_type": "Policy",
+            "type": "Policy",
+            "label": "Cloud Policy",
+            "attributes": {
+                "policy_name": "cloud_policy.pdf",
+                "status": "ACTIVE",
+                "risk_score": 100,
+                "conflict_count": 0,
+                "duplicate_count": 0,
+                "overlap_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001",
+            "node_type": "Policy",
+            "type": "Policy",
+            "label": "Password Policy",
+            "attributes": {
+                "policy_name": "password_policy.pdf",
+                "status": "ACTIVE",
+                "risk_score": 35,
+                "conflict_count": 6,
+                "duplicate_count": 5,
+                "overlap_count": 0
+            }
+        },
+        {
+            "node_id": "POL-002",
+            "node_type": "Policy",
+            "type": "Policy",
+            "label": "Test Policy",
+            "attributes": {
+                "policy_name": "test_policy.pdf",
+                "status": "ACTIVE",
+                "risk_score": 78,
+                "conflict_count": 2,
+                "duplicate_count": 2,
+                "overlap_count": 0
+            }
+        },
+        {
+            "node_id": "POL-003_OBL-001",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-001",
+            "attributes": {
+                "obligation_id": "OBL-001",
+                "policy_id": "POL-003",
+                "canonical_text": "Cloud Systems Rotate",
+                "topic": "Cloud Security",
+                "severity": "CRITICAL",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "TOPIC_CLOUD_SECURITY",
+            "node_type": "Topic",
+            "type": "Topic",
+            "label": "Cloud Security",
+            "attributes": {}
+        },
+        {
+            "node_id": "POL-003_OBL-002",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-002",
+            "attributes": {
+                "obligation_id": "OBL-002",
+                "policy_id": "POL-003",
+                "canonical_text": "Every Cloud Account Must Enforce Multi-Factor Authentication",
+                "topic": "Cloud Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-003_OBL-003",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-003",
+            "attributes": {
+                "obligation_id": "OBL-003",
+                "policy_id": "POL-003",
+                "canonical_text": "Credentials Should Store Using Password Managers For Every Cloud Account",
+                "topic": "Cloud Security",
+                "severity": "MEDIUM",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-003_OBL-004",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-004",
+            "attributes": {
+                "obligation_id": "OBL-004",
+                "policy_id": "POL-003",
+                "canonical_text": "Cloud Administrators Must Review Privileged Accounts every month Monthly",
+                "topic": "Cloud Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001_OBL-001",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-001",
+            "attributes": {
+                "obligation_id": "OBL-001",
+                "policy_id": "POL-001",
+                "canonical_text": "Employees Rotate Passwords Every 90 Days",
+                "topic": "Password Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "TOPIC_PASSWORD_SECURITY",
+            "node_type": "Topic",
+            "type": "Topic",
+            "label": "Password Security",
+            "attributes": {}
+        },
+        {
+            "node_id": "POL-001_OBL-002",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-002",
+            "attributes": {
+                "obligation_id": "OBL-002",
+                "policy_id": "POL-001",
+                "canonical_text": "Employees Rotate Passwords Every 90 Days",
+                "topic": "Password Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001_OBL-003",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-003",
+            "attributes": {
+                "obligation_id": "OBL-003",
+                "policy_id": "POL-001",
+                "canonical_text": "Employees Share Passwords",
+                "topic": "Password Security",
+                "severity": "CRITICAL",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001_OBL-004",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-004",
+            "attributes": {
+                "obligation_id": "OBL-004",
+                "policy_id": "POL-001",
+                "canonical_text": "Employees Share Passwords",
+                "topic": "Password Security",
+                "severity": "CRITICAL",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001_OBL-005",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-005",
+            "attributes": {
+                "obligation_id": "OBL-005",
+                "policy_id": "POL-001",
+                "canonical_text": "Users Require MFA",
+                "topic": "Password Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-001_OBL-006",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-006",
+            "attributes": {
+                "obligation_id": "OBL-006",
+                "policy_id": "POL-001",
+                "canonical_text": "Users Require MFA",
+                "topic": "Password Security",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "POL-002_OBL-001",
+            "node_type": "Obligation",
+            "type": "Obligation",
+            "label": "OBL-001",
+            "attributes": {
+                "obligation_id": "OBL-001",
+                "policy_id": "POL-002",
+                "canonical_text": "Employees Rotate Passwords Every 90 Days",
+                "topic": "Password Rotation Policy",
+                "severity": "HIGH",
+                "relationship_count": 0
+            }
+        },
+        {
+            "node_id": "TOPIC_PASSWORD_ROTATION_POLICY",
+            "node_type": "Topic",
+            "type": "Topic",
+            "label": "Password Rotation Policy",
+            "attributes": {}
+        },
+        {
+            "node_id": "ANL-001",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-001",
+            "attributes": {
+                "relationship": "DUPLICATE",
+                "confidence": 1.0,
+                "severity": "LOW",
+                "reason": "Both obligations are identical, requiring the same action (rotating passwords every 90 days) without any additional or differentiating criteria.",
+                "recommendation": "Retain one obligation and remove the duplicate to streamline policy documentation.",
+                "match_id": "MATCH-001"
+            }
+        },
+        {
+            "node_id": "ANL-002",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-002",
+            "attributes": {
+                "relationship": "DUPLICATE",
+                "confidence": 0.95,
+                "severity": "LOW",
+                "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and timing.",
+                "recommendation": "Consolidate both requirements into a single policy statement for clarity.",
+                "match_id": "MATCH-002"
+            }
+        },
+        {
+            "node_id": "ANL-003",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-003",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.95,
+                "severity": "CRITICAL",
+                "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a best practice for maintaining security. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the principle of password rotation and significantly increases the risk of unauthorized access. The conflict involves critical security controls related to authentication.",
+                "recommendation": "Align both requirements by implementing a policy that mandates secure password management practices without allowing password sharing. Educate employees on the importance of strong, unique passwords and regular password changes.",
+                "match_id": "MATCH-003"
+            }
+        },
+        {
+            "node_id": "ANL-004",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-004",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.95,
+                "severity": "CRITICAL",
+                "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a common security practice to prevent unauthorized access over time. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the password rotation and management principles aimed at maintaining secure authentication practices. Sharing passwords poses a significant risk of exposing sensitive information and can lead to unauthorized access.",
+                "recommendation": "Retain Obligation A for password rotation and revise Obligation B to prohibit sharing passwords altogether. Implement password policies that align with best security practices.",
+                "match_id": "MATCH-004"
+            }
+        },
+        {
+            "node_id": "ANL-005",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-005",
+            "attributes": {
+                "relationship": "DUPLICATE",
+                "confidence": 1.0,
+                "severity": "LOW",
+                "reason": "Both obligations are identical, requiring password rotation every 90 days with no additional or differing requirements.",
+                "recommendation": "Retain as a single requirement for clarity and simplicity.",
+                "match_id": "MATCH-005"
+            }
+        },
+        {
+            "node_id": "ANL-006",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-006",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.98,
+                "severity": "CRITICAL",
+                "reason": "Obligation A requires regular password changes, which is a common best practice to prevent unauthorized access and ensure data security. Obligation B, however, explicitly encourages the sharing of passwords, which directly contradicts the principle of strong password management by making credentials more vulnerable to misuse or theft. Given the critical nature of both password rotation and the protection against unauthorized access, this conflict poses a high risk.",
+                "recommendation": "Align these obligations to remove the conflicting requirement for password sharing and enforce regular password changes as part of robust security practices.",
+                "match_id": "MATCH-006"
+            }
+        },
+        {
+            "node_id": "ANL-007",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-007",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.95,
+                "severity": "CRITICAL",
+                "reason": "Obligation A requires employees to change their passwords every 90 days, which is a best practice for enhancing security. Obligation B instructs employees to share passwords, which directly conflicts with the intent of password rotation and can significantly compromise security. Sharing passwords undermines the purpose of regular password changes by making accounts more susceptible to unauthorized access.",
+                "recommendation": "Retain Obligation A as it is a fundamental security measure. Remove or modify Obligation B to prohibit password sharing.",
+                "match_id": "MATCH-007"
+            }
+        },
+        {
+            "node_id": "ANL-008",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-008",
+            "attributes": {
+                "relationship": "DUPLICATE",
+                "confidence": 1.0,
+                "severity": "LOW",
+                "reason": "Both obligations are identical and state that employees share passwords, which is a non-compliant and insecure practice.",
+                "recommendation": "Remove one of the duplicate obligations to avoid confusion and ensure compliance with secure password management practices.",
+                "match_id": "MATCH-008"
+            }
+        },
+        {
+            "node_id": "ANL-009",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-009",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.98,
+                "severity": "CRITICAL",
+                "reason": "Obligation A encourages sharing passwords, which directly conflicts with the security best practice of rotating and maintaining unique passwords as stated in Obligation B.",
+                "recommendation": "Retain Obligation B to enforce password rotation and remove or modify Obligation A to prohibit password sharing.",
+                "match_id": "MATCH-009"
+            }
+        },
+        {
+            "node_id": "ANL-010",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-010",
+            "attributes": {
+                "relationship": "CONFLICT",
+                "confidence": 0.95,
+                "severity": "CRITICAL",
+                "reason": "Obligation A requires employees to share passwords, which is a security risk as shared credentials can lead to unauthorized access and compromise of sensitive information. Obligation B mandates rotating passwords every 90 days, which aims to mitigate the risk of password leakage or brute-force attacks but cannot address the inherent security issues introduced by sharing passwords. Both obligations are fundamentally at odds with each other.",
+                "recommendation": "Retain Obligation B as it is a best practice for password management and security. Remove Obligation A entirely.",
+                "match_id": "MATCH-010"
+            }
+        },
+        {
+            "node_id": "ANL-011",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-011",
+            "attributes": {
+                "relationship": "DUPLICATE",
+                "confidence": 1.0,
+                "severity": "LOW",
+                "reason": "Both obligations require users to use MFA, which are identical in content and meaning.",
+                "recommendation": "Consolidate both requirements into a single policy statement for clarity.",
+                "match_id": "MATCH-011"
+            }
+        },
+        {
+            "node_id": "ANL-012",
+            "node_type": "Analysis",
+            "type": "Analysis",
+            "label": "ANL-012",
+            "attributes": {
+                "relationship": "COMPLEMENTARY",
+                "confidence": 0.95,
+                "severity": "LOW",
+                "reason": "Multi-factor authentication (MFA) adds an additional layer of security by requiring a second form of verification beyond just the credentials, while password managers help securely store and manage these credentials. Both practices are complementary and enhance overall security without conflicting with each other.",
+                "recommendation": "Retain both requirements as they serve different but important functions in securing cloud accounts.",
+                "match_id": "MATCH-012"
+            }
+        }
+    ],
+    "edges": [
+        {
+            "source": "POL-003",
+            "target": "POL-003_OBL-001",
+            "edge_id": "EDGE_POL-003_HAS_OBL-001",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003_OBL-001",
+            "target": "TOPIC_CLOUD_SECURITY",
+            "edge_id": "EDGE_POL-003_OBL-001_BELONGS_TOPIC_CLOUD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003",
+            "target": "POL-003_OBL-002",
+            "edge_id": "EDGE_POL-003_HAS_OBL-002",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003_OBL-002",
+            "target": "TOPIC_CLOUD_SECURITY",
+            "edge_id": "EDGE_POL-003_OBL-002_BELONGS_TOPIC_CLOUD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003",
+            "target": "POL-003_OBL-003",
+            "edge_id": "EDGE_POL-003_HAS_OBL-003",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003_OBL-003",
+            "target": "TOPIC_CLOUD_SECURITY",
+            "edge_id": "EDGE_POL-003_OBL-003_BELONGS_TOPIC_CLOUD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003",
+            "target": "POL-003_OBL-004",
+            "edge_id": "EDGE_POL-003_HAS_OBL-004",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-003_OBL-004",
+            "target": "TOPIC_CLOUD_SECURITY",
+            "edge_id": "EDGE_POL-003_OBL-004_BELONGS_TOPIC_CLOUD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-001",
+            "edge_id": "EDGE_POL-001_HAS_OBL-001",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-001",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-001_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_POL-001_HAS_OBL-002",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-002",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-002_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_POL-001_HAS_OBL-003",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-003",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-003_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_POL-001_HAS_OBL-004",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-004",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-004_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-005",
+            "edge_id": "EDGE_POL-001_HAS_OBL-005",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-005",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-005_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001",
+            "target": "POL-001_OBL-006",
+            "edge_id": "EDGE_POL-001_HAS_OBL-006",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-006",
+            "target": "TOPIC_PASSWORD_SECURITY",
+            "edge_id": "EDGE_POL-001_OBL-006_BELONGS_TOPIC_PASSWORD_SECURITY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-002",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_POL-002_HAS_OBL-001",
+            "relationship": "HAS_OBLIGATION",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "POL-002_OBL-001",
+            "target": "TOPIC_PASSWORD_ROTATION_POLICY",
+            "edge_id": "EDGE_POL-002_OBL-001_BELONGS_TOPIC_PASSWORD_ROTATION_POLICY",
+            "relationship": "BELONGS_TO_TOPIC",
+            "confidence": null,
+            "severity": null,
+            "attributes": {}
+        },
+        {
+            "source": "ANL-001",
+            "target": "POL-001_OBL-001",
+            "edge_id": "EDGE_ANL-001_EVAL_POL-001_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-001",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_ANL-001_EVAL_POL-002_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-001",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_POL-001_OBL-001_DUPLICATES_POL-002_OBL-001",
+            "relationship": "DUPLICATES",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Both obligations are identical, requiring the same action (rotating passwords every 90 days) without any additional or differentiating criteria.",
+                "recommendation": "Retain one obligation and remove the duplicate to streamline policy documentation.",
+                "analysis_id": "ANL-001"
+            }
+        },
+        {
+            "source": "ANL-002",
+            "target": "POL-001_OBL-001",
+            "edge_id": "EDGE_ANL-002_EVAL_POL-001_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-002",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_ANL-002_EVAL_POL-001_OBL-002",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-001",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_POL-001_OBL-001_DUPLICATES_POL-001_OBL-002",
+            "relationship": "DUPLICATES",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and timing.",
+                "recommendation": "Consolidate both requirements into a single policy statement for clarity.",
+                "analysis_id": "ANL-002"
+            }
+        },
+        {
+            "source": "ANL-003",
+            "target": "POL-001_OBL-001",
+            "edge_id": "EDGE_ANL-003_EVAL_POL-001_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-003",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_ANL-003_EVAL_POL-001_OBL-004",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-001",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_POL-001_OBL-001_CONFLICTS_WITH_POL-001_OBL-004",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a best practice for maintaining security. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the principle of password rotation and significantly increases the risk of unauthorized access. The conflict involves critical security controls related to authentication.",
+                "recommendation": "Align both requirements by implementing a policy that mandates secure password management practices without allowing password sharing. Educate employees on the importance of strong, unique passwords and regular password changes.",
+                "analysis_id": "ANL-003"
+            }
+        },
+        {
+            "source": "ANL-004",
+            "target": "POL-001_OBL-001",
+            "edge_id": "EDGE_ANL-004_EVAL_POL-001_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-004",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_ANL-004_EVAL_POL-001_OBL-003",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-001",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_POL-001_OBL-001_CONFLICTS_WITH_POL-001_OBL-003",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a common security practice to prevent unauthorized access over time. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the password rotation and management principles aimed at maintaining secure authentication practices. Sharing passwords poses a significant risk of exposing sensitive information and can lead to unauthorized access.",
+                "recommendation": "Retain Obligation A for password rotation and revise Obligation B to prohibit sharing passwords altogether. Implement password policies that align with best security practices.",
+                "analysis_id": "ANL-004"
+            }
+        },
+        {
+            "source": "ANL-005",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_ANL-005_EVAL_POL-001_OBL-002",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-005",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_ANL-005_EVAL_POL-002_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-002",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_POL-001_OBL-002_DUPLICATES_POL-002_OBL-001",
+            "relationship": "DUPLICATES",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Both obligations are identical, requiring password rotation every 90 days with no additional or differing requirements.",
+                "recommendation": "Retain as a single requirement for clarity and simplicity.",
+                "analysis_id": "ANL-005"
+            }
+        },
+        {
+            "source": "ANL-006",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_ANL-006_EVAL_POL-001_OBL-002",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-006",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_ANL-006_EVAL_POL-001_OBL-004",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-002",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_POL-001_OBL-002_CONFLICTS_WITH_POL-001_OBL-004",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A requires regular password changes, which is a common best practice to prevent unauthorized access and ensure data security. Obligation B, however, explicitly encourages the sharing of passwords, which directly contradicts the principle of strong password management by making credentials more vulnerable to misuse or theft. Given the critical nature of both password rotation and the protection against unauthorized access, this conflict poses a high risk.",
+                "recommendation": "Align these obligations to remove the conflicting requirement for password sharing and enforce regular password changes as part of robust security practices.",
+                "analysis_id": "ANL-006"
+            }
+        },
+        {
+            "source": "ANL-007",
+            "target": "POL-001_OBL-002",
+            "edge_id": "EDGE_ANL-007_EVAL_POL-001_OBL-002",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-007",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_ANL-007_EVAL_POL-001_OBL-003",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-002",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_POL-001_OBL-002_CONFLICTS_WITH_POL-001_OBL-003",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A requires employees to change their passwords every 90 days, which is a best practice for enhancing security. Obligation B instructs employees to share passwords, which directly conflicts with the intent of password rotation and can significantly compromise security. Sharing passwords undermines the purpose of regular password changes by making accounts more susceptible to unauthorized access.",
+                "recommendation": "Retain Obligation A as it is a fundamental security measure. Remove or modify Obligation B to prohibit password sharing.",
+                "analysis_id": "ANL-007"
+            }
+        },
+        {
+            "source": "ANL-008",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_ANL-008_EVAL_POL-001_OBL-003",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-008",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_ANL-008_EVAL_POL-001_OBL-004",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-003",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_POL-001_OBL-003_DUPLICATES_POL-001_OBL-004",
+            "relationship": "DUPLICATES",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Both obligations are identical and state that employees share passwords, which is a non-compliant and insecure practice.",
+                "recommendation": "Remove one of the duplicate obligations to avoid confusion and ensure compliance with secure password management practices.",
+                "analysis_id": "ANL-008"
+            }
+        },
+        {
+            "source": "ANL-009",
+            "target": "POL-001_OBL-003",
+            "edge_id": "EDGE_ANL-009_EVAL_POL-001_OBL-003",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-009",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_ANL-009_EVAL_POL-002_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-003",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_POL-001_OBL-003_CONFLICTS_WITH_POL-002_OBL-001",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.98,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A encourages sharing passwords, which directly conflicts with the security best practice of rotating and maintaining unique passwords as stated in Obligation B.",
+                "recommendation": "Retain Obligation B to enforce password rotation and remove or modify Obligation A to prohibit password sharing.",
+                "analysis_id": "ANL-009"
+            }
+        },
+        {
+            "source": "ANL-010",
+            "target": "POL-001_OBL-004",
+            "edge_id": "EDGE_ANL-010_EVAL_POL-001_OBL-004",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-010",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_ANL-010_EVAL_POL-002_OBL-001",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-004",
+            "target": "POL-002_OBL-001",
+            "edge_id": "EDGE_POL-001_OBL-004_CONFLICTS_WITH_POL-002_OBL-001",
+            "relationship": "CONFLICTS_WITH",
+            "confidence": 0.95,
+            "severity": "CRITICAL",
+            "attributes": {
+                "reason": "Obligation A requires employees to share passwords, which is a security risk as shared credentials can lead to unauthorized access and compromise of sensitive information. Obligation B mandates rotating passwords every 90 days, which aims to mitigate the risk of password leakage or brute-force attacks but cannot address the inherent security issues introduced by sharing passwords. Both obligations are fundamentally at odds with each other.",
+                "recommendation": "Retain Obligation B as it is a best practice for password management and security. Remove Obligation A entirely.",
+                "analysis_id": "ANL-010"
+            }
+        },
+        {
+            "source": "ANL-011",
+            "target": "POL-001_OBL-005",
+            "edge_id": "EDGE_ANL-011_EVAL_POL-001_OBL-005",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-011",
+            "target": "POL-001_OBL-006",
+            "edge_id": "EDGE_ANL-011_EVAL_POL-001_OBL-006",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-001_OBL-005",
+            "target": "POL-001_OBL-006",
+            "edge_id": "EDGE_POL-001_OBL-005_DUPLICATES_POL-001_OBL-006",
+            "relationship": "DUPLICATES",
+            "confidence": 1.0,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Both obligations require users to use MFA, which are identical in content and meaning.",
+                "recommendation": "Consolidate both requirements into a single policy statement for clarity.",
+                "analysis_id": "ANL-011"
+            }
+        },
+        {
+            "source": "ANL-012",
+            "target": "POL-003_OBL-002",
+            "edge_id": "EDGE_ANL-012_EVAL_POL-003_OBL-002",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "ANL-012",
+            "target": "POL-003_OBL-003",
+            "edge_id": "EDGE_ANL-012_EVAL_POL-003_OBL-003",
+            "relationship": "GENERATED_ANALYSIS",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {}
+        },
+        {
+            "source": "POL-003_OBL-002",
+            "target": "POL-003_OBL-003",
+            "edge_id": "EDGE_POL-003_OBL-002_COMPLEMENTS_POL-003_OBL-003",
+            "relationship": "COMPLEMENTS",
+            "confidence": 0.95,
+            "severity": "LOW",
+            "attributes": {
+                "reason": "Multi-factor authentication (MFA) adds an additional layer of security by requiring a second form of verification beyond just the credentials, while password managers help securely store and manage these credentials. Both practices are complementary and enhance overall security without conflicting with each other.",
+                "recommendation": "Retain both requirements as they serve different but important functions in securing cloud accounts.",
+                "analysis_id": "ANL-012"
+            }
+        }
+    ]
+}

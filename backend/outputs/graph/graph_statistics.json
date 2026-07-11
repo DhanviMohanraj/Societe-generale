@@ -1,0 +1,13 @@
+{
+    "total_policies": 3,
+    "total_obligations": 11,
+    "total_topics": 3,
+    "total_relationships": 12,
+    "total_conflicts": 6,
+    "total_duplicates": 5,
+    "total_overlaps": 0,
+    "largest_connected_component": 22,
+    "average_node_degree": 4.0,
+    "graph_density": 0.0714,
+    "average_confidence": 0.9717
+}

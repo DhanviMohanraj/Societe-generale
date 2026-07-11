@@ -1,0 +1,297 @@
+{
+    "policy_metrics": {
+        "POL-003": {
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "average_confidence": 0.95,
+            "relationship_count": 1,
+            "risk_score": 100,
+            "topic_count": 1
+        },
+        "POL-001": {
+            "conflict_count": 6,
+            "duplicate_count": 5,
+            "overlap_count": 0,
+            "average_confidence": 0.9736,
+            "relationship_count": 11,
+            "risk_score": 35,
+            "topic_count": 1
+        },
+        "POL-002": {
+            "conflict_count": 2,
+            "duplicate_count": 2,
+            "overlap_count": 0,
+            "average_confidence": 0.9825,
+            "relationship_count": 4,
+            "risk_score": 78,
+            "topic_count": 1
+        }
+    },
+    "obligation_metrics": {
+        "POL-003_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-003",
+            "canonical_text": "Cloud Systems Rotate",
+            "topic": "Cloud Security",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-003_OBL-002": {
+            "obligation_id": "OBL-002",
+            "policy_id": "POL-003",
+            "canonical_text": "Every Cloud Account Must Enforce Multi-Factor Authentication",
+            "topic": "Cloud Security",
+            "relationship_count": 1,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-003_OBL-003": {
+            "obligation_id": "OBL-003",
+            "policy_id": "POL-003",
+            "canonical_text": "Credentials Should Store Using Password Managers For Every Cloud Account",
+            "topic": "Cloud Security",
+            "relationship_count": 1,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-003_OBL-004": {
+            "obligation_id": "OBL-004",
+            "policy_id": "POL-003",
+            "canonical_text": "Cloud Administrators Must Review Privileged Accounts every month Monthly",
+            "topic": "Cloud Security",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-001",
+            "canonical_text": "Employees Rotate Passwords Every 90 Days",
+            "topic": "Password Security",
+            "relationship_count": 4,
+            "conflict_count": 2,
+            "duplicate_count": 2,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-002": {
+            "obligation_id": "OBL-002",
+            "policy_id": "POL-001",
+            "canonical_text": "Employees Rotate Passwords Every 90 Days",
+            "topic": "Password Security",
+            "relationship_count": 4,
+            "conflict_count": 2,
+            "duplicate_count": 2,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-003": {
+            "obligation_id": "OBL-003",
+            "policy_id": "POL-001",
+            "canonical_text": "Employees Share Passwords",
+            "topic": "Password Security",
+            "relationship_count": 4,
+            "conflict_count": 3,
+            "duplicate_count": 1,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-004": {
+            "obligation_id": "OBL-004",
+            "policy_id": "POL-001",
+            "canonical_text": "Employees Share Passwords",
+            "topic": "Password Security",
+            "relationship_count": 4,
+            "conflict_count": 3,
+            "duplicate_count": 1,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-005": {
+            "obligation_id": "OBL-005",
+            "policy_id": "POL-001",
+            "canonical_text": "Users Require MFA",
+            "topic": "Password Security",
+            "relationship_count": 1,
+            "conflict_count": 0,
+            "duplicate_count": 1,
+            "overlap_count": 0
+        },
+        "POL-001_OBL-006": {
+            "obligation_id": "OBL-006",
+            "policy_id": "POL-001",
+            "canonical_text": "Users Require MFA",
+            "topic": "Password Security",
+            "relationship_count": 1,
+            "conflict_count": 0,
+            "duplicate_count": 1,
+            "overlap_count": 0
+        },
+        "POL-002_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-002",
+            "canonical_text": "Employees Rotate Passwords Every 90 Days",
+            "topic": "Password Rotation Policy",
+            "relationship_count": 4,
+            "conflict_count": 2,
+            "duplicate_count": 2,
+            "overlap_count": 0
+        }
+    },
+    "topic_metrics": {
+        "TOPIC_PASSWORD_SECURITY": {
+            "topic_name": "Password Security",
+            "obligation_count": 6,
+            "policy_count": 1,
+            "conflict_count": 6
+        },
+        "TOPIC_CLOUD_SECURITY": {
+            "topic_name": "Cloud Security",
+            "obligation_count": 4,
+            "policy_count": 1,
+            "conflict_count": 0
+        },
+        "TOPIC_PASSWORD_ROTATION_POLICY": {
+            "topic_name": "Password Rotation Policy",
+            "obligation_count": 1,
+            "policy_count": 1,
+            "conflict_count": 2
+        }
+    },
+    "relationship_metrics": [
+        {
+            "analysis_id": "ANL-001",
+            "match_id": "MATCH-001",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-001",
+            "target_node_id": "POL-002_OBL-001",
+            "severity": "LOW",
+            "confidence": 1.0,
+            "reason": "Both obligations are identical, requiring the same action (rotating passwords every 90 days) without any additional or differentiating criteria.",
+            "recommendation": "Retain one obligation and remove the duplicate to streamline policy documentation."
+        },
+        {
+            "analysis_id": "ANL-002",
+            "match_id": "MATCH-002",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-001",
+            "target_node_id": "POL-001_OBL-002",
+            "severity": "LOW",
+            "confidence": 0.95,
+            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and timing.",
+            "recommendation": "Consolidate both requirements into a single policy statement for clarity."
+        },
+        {
+            "analysis_id": "ANL-003",
+            "match_id": "MATCH-003",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-001",
+            "target_node_id": "POL-001_OBL-004",
+            "severity": "CRITICAL",
+            "confidence": 0.95,
+            "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a best practice for maintaining security. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the principle of password rotation and significantly increases the risk of unauthorized access. The conflict involves critical security controls related to authentication.",
+            "recommendation": "Align both requirements by implementing a policy that mandates secure password management practices without allowing password sharing. Educate employees on the importance of strong, unique passwords and regular password changes."
+        },
+        {
+            "analysis_id": "ANL-004",
+            "match_id": "MATCH-004",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-001",
+            "target_node_id": "POL-001_OBL-003",
+            "severity": "CRITICAL",
+            "confidence": 0.95,
+            "reason": "Obligation A requires employees to rotate passwords every 90 days, which is a common security practice to prevent unauthorized access over time. Obligation B, on the other hand, instructs employees to share passwords, which directly contradicts the password rotation and management principles aimed at maintaining secure authentication practices. Sharing passwords poses a significant risk of exposing sensitive information and can lead to unauthorized access.",
+            "recommendation": "Retain Obligation A for password rotation and revise Obligation B to prohibit sharing passwords altogether. Implement password policies that align with best security practices."
+        },
+        {
+            "analysis_id": "ANL-005",
+            "match_id": "MATCH-005",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-002",
+            "target_node_id": "POL-002_OBL-001",
+            "severity": "LOW",
+            "confidence": 1.0,
+            "reason": "Both obligations are identical, requiring password rotation every 90 days with no additional or differing requirements.",
+            "recommendation": "Retain as a single requirement for clarity and simplicity."
+        },
+        {
+            "analysis_id": "ANL-006",
+            "match_id": "MATCH-006",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-002",
+            "target_node_id": "POL-001_OBL-004",
+            "severity": "CRITICAL",
+            "confidence": 0.98,
+            "reason": "Obligation A requires regular password changes, which is a common best practice to prevent unauthorized access and ensure data security. Obligation B, however, explicitly encourages the sharing of passwords, which directly contradicts the principle of strong password management by making credentials more vulnerable to misuse or theft. Given the critical nature of both password rotation and the protection against unauthorized access, this conflict poses a high risk.",
+            "recommendation": "Align these obligations to remove the conflicting requirement for password sharing and enforce regular password changes as part of robust security practices."
+        },
+        {
+            "analysis_id": "ANL-007",
+            "match_id": "MATCH-007",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-002",
+            "target_node_id": "POL-001_OBL-003",
+            "severity": "CRITICAL",
+            "confidence": 0.95,
+            "reason": "Obligation A requires employees to change their passwords every 90 days, which is a best practice for enhancing security. Obligation B instructs employees to share passwords, which directly conflicts with the intent of password rotation and can significantly compromise security. Sharing passwords undermines the purpose of regular password changes by making accounts more susceptible to unauthorized access.",
+            "recommendation": "Retain Obligation A as it is a fundamental security measure. Remove or modify Obligation B to prohibit password sharing."
+        },
+        {
+            "analysis_id": "ANL-008",
+            "match_id": "MATCH-008",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-003",
+            "target_node_id": "POL-001_OBL-004",
+            "severity": "LOW",
+            "confidence": 1.0,
+            "reason": "Both obligations are identical and state that employees share passwords, which is a non-compliant and insecure practice.",
+            "recommendation": "Remove one of the duplicate obligations to avoid confusion and ensure compliance with secure password management practices."
+        },
+        {
+            "analysis_id": "ANL-009",
+            "match_id": "MATCH-009",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-003",
+            "target_node_id": "POL-002_OBL-001",
+            "severity": "CRITICAL",
+            "confidence": 0.98,
+            "reason": "Obligation A encourages sharing passwords, which directly conflicts with the security best practice of rotating and maintaining unique passwords as stated in Obligation B.",
+            "recommendation": "Retain Obligation B to enforce password rotation and remove or modify Obligation A to prohibit password sharing."
+        },
+        {
+            "analysis_id": "ANL-010",
+            "match_id": "MATCH-010",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-004",
+            "target_node_id": "POL-002_OBL-001",
+            "severity": "CRITICAL",
+            "confidence": 0.95,
+            "reason": "Obligation A requires employees to share passwords, which is a security risk as shared credentials can lead to unauthorized access and compromise of sensitive information. Obligation B mandates rotating passwords every 90 days, which aims to mitigate the risk of password leakage or brute-force attacks but cannot address the inherent security issues introduced by sharing passwords. Both obligations are fundamentally at odds with each other.",
+            "recommendation": "Retain Obligation B as it is a best practice for password management and security. Remove Obligation A entirely."
+        },
+        {
+            "analysis_id": "ANL-011",
+            "match_id": "MATCH-011",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-005",
+            "target_node_id": "POL-001_OBL-006",
+            "severity": "LOW",
+            "confidence": 1.0,
+            "reason": "Both obligations require users to use MFA, which are identical in content and meaning.",
+            "recommendation": "Consolidate both requirements into a single policy statement for clarity."
+        },
+        {
+            "analysis_id": "ANL-012",
+            "match_id": "MATCH-012",
+            "relationship": "COMPLEMENTARY",
+            "source_node_id": "POL-003_OBL-002",
+            "target_node_id": "POL-003_OBL-003",
+            "severity": "LOW",
+            "confidence": 0.95,
+            "reason": "Multi-factor authentication (MFA) adds an additional layer of security by requiring a second form of verification beyond just the credentials, while password managers help securely store and manage these credentials. Both practices are complementary and enhance overall security without conflicting with each other.",
+            "recommendation": "Retain both requirements as they serve different but important functions in securing cloud accounts."
+        }
+    ]
+}
