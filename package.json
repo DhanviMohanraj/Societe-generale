@@ -1,0 +1,9 @@
+{
+  "name": "lexora-workspace-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend"
+  }
+}
