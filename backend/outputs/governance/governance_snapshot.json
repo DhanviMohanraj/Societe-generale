@@ -1,0 +1,66 @@
+{
+    "generated_at": "2026-07-11T12:27:11.084534Z",
+    "overall_governance_score": 57,
+    "overall_risk_level": "CRITICAL",
+    "total_policies": 3,
+    "total_obligations": 11,
+    "critical_conflicts": 6,
+    "duplicate_requirements": 5,
+    "graph_density": 0.0714,
+    "average_ai_confidence": 0.9717,
+    "high_risk_policies": 2,
+    "top_recommendations": [
+        "Immediately review conflicting security policies.",
+        "Merge duplicate obligations into one canonical policy.",
+        "Expand policy coverage."
+    ],
+    "policy_summaries": [
+        {
+            "policy_id": "POL-003",
+            "policy_name": "cloud_policy.pdf",
+            "governance_score": 100,
+            "risk_level": "LOW",
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "critical_conflicts": 0,
+            "average_ai_confidence": 0.95,
+            "recommendation_priority": "LOW",
+            "recommendations": [
+                "Expand policy coverage."
+            ]
+        },
+        {
+            "policy_id": "POL-001",
+            "policy_name": "password_policy.pdf",
+            "governance_score": 2,
+            "risk_level": "CRITICAL",
+            "conflict_count": 6,
+            "duplicate_count": 5,
+            "overlap_count": 0,
+            "critical_conflicts": 6,
+            "average_ai_confidence": 0.9736,
+            "recommendation_priority": "CRITICAL",
+            "recommendations": [
+                "Immediately review conflicting security policies.",
+                "Merge duplicate obligations into one canonical policy.",
+                "Expand policy coverage."
+            ]
+        },
+        {
+            "policy_id": "POL-002",
+            "policy_name": "test_policy.pdf",
+            "governance_score": 68,
+            "risk_level": "HIGH",
+            "conflict_count": 2,
+            "duplicate_count": 2,
+            "overlap_count": 0,
+            "critical_conflicts": 2,
+            "average_ai_confidence": 0.9825,
+            "recommendation_priority": "CRITICAL",
+            "recommendations": [
+                "Immediately review conflicting security policies."
+            ]
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+[
+    {
+        "policy_id": "POL-003",
+        "policy_name": "cloud_policy.pdf",
+        "recommendations": [
+            "Expand policy coverage."
+        ],
+        "priority": "LOW"
+    },
+    {
+        "policy_id": "POL-001",
+        "policy_name": "password_policy.pdf",
+        "recommendations": [
+            "Immediately review conflicting security policies.",
+            "Merge duplicate obligations into one canonical policy.",
+            "Expand policy coverage."
+        ],
+        "priority": "CRITICAL"
+    },
+    {
+        "policy_id": "POL-002",
+        "policy_name": "test_policy.pdf",
+        "recommendations": [
+            "Immediately review conflicting security policies."
+        ],
+        "priority": "CRITICAL"
+    }
+]
