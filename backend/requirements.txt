@@ -3,3 +3,6 @@ uvicorn
 python-multipart
 ollama
 pymupdf
+sentence-transformers
+torch
+numpy
