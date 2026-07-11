@@ -12,6 +12,7 @@ from app.api.similarity import router as similarity_router
 from app.api.analysis import router as analysis_router
 from app.api.graph import router as graph_router
 from app.api.governance import router as governance_router
+from app.api.pipeline import router as pipeline_router
 from app.services.embedding_service import EmbeddingService
 
 # Initialize the FastAPI application
@@ -41,6 +42,7 @@ app.include_router(similarity_router)
 app.include_router(analysis_router)
 app.include_router(graph_router)
 app.include_router(governance_router)
+app.include_router(pipeline_router)
 
 # Startup event to ensure uploads directory exists and preload the model
 @app.on_event("startup")

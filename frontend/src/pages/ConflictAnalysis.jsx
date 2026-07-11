@@ -5,64 +5,104 @@ import { jsPDF } from 'jspdf';
 import ConflictCompareOverlay from '../components/ConflictCompareOverlay';
 import KnowledgeGraph from '../components/KnowledgeGraph';
 
+import api from '../services/api';
+import { analysisService } from '../services/analysisService';
+import { graphService } from '../services/graphService';
+
 export default function ConflictAnalysis() {
   const { addToast } = useOutletContext();
 
+  const [conflicts, setConflicts] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [loadStep, setLoadStep] = useState(0);
+  const [oblTextA, setOblTextA] = useState('');
+  const [oblTextB, setOblTextB] = useState('');
+
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isGraphExpanded, setIsGraphExpanded] = useState(false);
   
   const [confidence, setConfidence] = useState(0);
-  const [complianceScore, setComplianceScore] = useState(82); // updates 82% -> 97% after resolve
+  const [complianceScore, setComplianceScore] = useState(0); // derived from real conflict data
   const [isResolved, setIsResolved] = useState(false);
 
   // PDF report loader states
   const [reportState, setReportState] = useState('idle'); // 'idle' | 'processing' | 'downloaded'
   const [reportStep, setReportStep] = useState(0);
 
-  // Dynamic Timeline Array
-  const [timelineEvents, setTimelineEvents] = useState([
-    { time: '09:31 AM', title: 'Conflict Detected', desc: 'System flag occurred during ingestion of EMEA Regional Standards.' },
-    { time: '09:32 AM', title: 'AI Contextual Analysis Run', desc: 'Extracted clauses matched and confidence metric evaluated at 98%.' }
-  ]);
+  // Timeline events — built dynamically from real conflict data, starts empty
+  const [timelineEvents, setTimelineEvents] = useState([]);
 
-  // Timed loader on page enter
-  useEffect(() => {
-    setLoading(true);
-    setLoadStep(0);
-
-    const t1 = setTimeout(() => setLoadStep(1), 800);
-    const t2 = setTimeout(() => setLoadStep(2), 1600);
-    const t3 = setTimeout(() => setLoadStep(3), 2400);
-    const t4 = setTimeout(() => {
+  // Load conflicts from backend
+  const fetchConflicts = async () => {
+    try {
+      setLoading(true);
+      const data = await analysisService.getConflicts();
+      setConflicts(data);
+    } catch (err) {
+      console.error("Failed to load conflicts", err);
+      if (addToast) addToast("Failed to load active conflicts from database.", "error");
+    } finally {
       setLoading(false);
-    }, 3200);
+    }
+  };
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
+  useEffect(() => {
+    fetchConflicts();
   }, []);
 
-  // Animate confidence meter once dashboard loads
+  const activeConflict = conflicts[activeIdx];
+
+  // Fetch obligation texts + build timeline when active conflict changes
   useEffect(() => {
-    if (!loading) {
-      let val = 0;
-      const timer = setInterval(() => {
-        val += 2;
-        if (val >= 98) {
-          setConfidence(98);
-          clearInterval(timer);
-        } else {
-          setConfidence(val);
-        }
-      }, 15);
-      return () => clearInterval(timer);
-    }
-  }, [loading]);
+    if (!activeConflict) return;
+
+    // Reset resolved state for new conflict
+    setIsResolved(false);
+
+    const loadObligationTexts = async () => {
+      try {
+        const resA = await api.get(`/graph/obligation/${encodeURIComponent(activeConflict.source_obligation_id)}`);
+        setOblTextA(resA.data.obligation_node?.attributes?.text || activeConflict.source_obligation_id);
+
+        const resB = await api.get(`/graph/obligation/${encodeURIComponent(activeConflict.target_obligation_id)}`);
+        setOblTextB(resB.data.obligation_node?.attributes?.text || activeConflict.target_obligation_id);
+      } catch (err) {
+        console.warn("Failed to load obligation texts from graph", err);
+        setOblTextA(activeConflict.source_obligation_id);
+        setOblTextB(activeConflict.target_obligation_id);
+      }
+    };
+
+    loadObligationTexts();
+
+    // Build timeline from real conflict data
+    const detectedAt = activeConflict.analyzed_at
+      ? new Date(activeConflict.analyzed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : 'N/A';
+    setTimelineEvents([
+      { time: detectedAt, title: 'Conflict Detected', desc: `AI flagged ${activeConflict.severity} severity overlap between "${activeConflict.source_policy_id}" and "${activeConflict.target_policy_id}".` },
+      { time: detectedAt, title: 'AI Contextual Analysis Run', desc: `Confidence evaluated at ${Math.round(activeConflict.confidence * 100)}%. Reasoning: ${activeConflict.reasoning?.slice(0, 80)}...` }
+    ]);
+
+    // Derive compliance score from confidence inverse (high confidence conflict = lower score)
+    const baseScore = Math.round(100 - (activeConflict.confidence * 100 * 0.3));
+    setComplianceScore(baseScore);
+
+    // Animate confidence meter
+    let val = 0;
+    const targetConf = Math.round(activeConflict.confidence * 100);
+    const timer = setInterval(() => {
+      val += 2;
+      if (val >= targetConf) {
+        setConfidence(targetConf);
+        clearInterval(timer);
+      } else {
+        setConfidence(val);
+      }
+    }, 15);
+
+    return () => clearInterval(timer);
+  }, [activeConflict]);
 
   const handleOpenCompare = () => {
     setIsCompareOpen(true);
@@ -93,18 +133,19 @@ export default function ConflictAnalysis() {
         {
           time: '09:36 AM',
           title: 'Recommendation Applied',
-          desc: 'EMEA regional exception approved and merged.'
+          desc: 'Resolution exception approved and merged.'
         }
       ];
     });
 
     if (addToast) {
-      addToast('Resolution applied successfully! Compliance score: 82% ➔ 97%', 'success');
+      addToast('Resolution applied successfully! Local compliance score updated.', 'success');
     }
   };
 
   // Generate Report Loader Simulation and jsPDF download trigger
   const triggerReportGeneration = () => {
+    if (!activeConflict) return;
     setReportState('processing');
     setReportStep(0);
 
@@ -129,6 +170,7 @@ export default function ConflictAnalysis() {
   };
 
   const generatePDFFile = () => {
+    if (!activeConflict) return;
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -151,9 +193,9 @@ export default function ConflictAnalysis() {
     // Metadata Summary
     doc.setFontSize(10);
     doc.setTextColor(254, 218, 215); // Light pinkish text color
-    doc.text("Conflict ID: CON-882", 15, 40);
-    doc.text("Severity: CRITICAL", 15, 46);
-    doc.text("Affected Departments: Global Security & EMEA Operations", 15, 52);
+    doc.text(`Conflict ID: ${activeConflict.analysis_id}`, 15, 40);
+    doc.text(`Severity: ${activeConflict.severity}`, 15, 46);
+    doc.text(`Source Policy: ${activeConflict.source_policy_id} | Target Policy: ${activeConflict.target_policy_id}`, 15, 52);
     doc.text(`Timestamp: ${new Date().toLocaleString()}`, 15, 58);
 
     doc.line(15, 64, 195, 64);
@@ -166,50 +208,45 @@ export default function ConflictAnalysis() {
     doc.setFont("Helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(232, 188, 185);
-    doc.text("A policy overlap conflict was detected between Global Password mandates and EMEA Regional operations.", 15, 82);
-    doc.text("Enterprise Policy A requires system credential rotation frequency every 90 Days.", 15, 87);
-    doc.text("Regional Policy B overrides settings up to 180 Days without corporate registration exceptions.", 15, 92);
+    doc.text(doc.splitTextToSize(activeConflict.reasoning, 180), 15, 82);
 
-    doc.line(15, 100, 195, 100);
+    doc.line(15, 110, 195, 110);
 
     // Section 2: AI Evaluated Insights
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
-    doc.text("2. AI EVALUATION & RECOMMENDATIONS", 15, 110);
+    doc.text("2. AI EVALUATION & RECOMMENDATIONS", 15, 120);
 
     doc.setFont("Helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(232, 188, 185);
-    doc.text("- Root Cause: Regional override overlaps global centralized active monitoring standards.", 15, 117);
-    doc.text("- GDPR Risk Factor: Elevated. Stale EMEA accounts create high threat vectors for central databases.", 15, 122);
-    doc.text("- Confidence level: 98% accuracy matching key compliance standards.", 15, 127);
+    doc.text(`- Root Cause: централизованное несовпадение параметров`, 15, 127);
+    doc.text(`- Confidence level: ${(activeConflict.confidence * 100).toFixed(0)}% matching key compliance standards.`, 15, 132);
 
-    doc.line(15, 135, 195, 135);
+    doc.line(15, 145, 195, 145);
 
     // Section 3: Recommended Merged Clause
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
-    doc.text("3. PROPOSED MERGED OBLIGATION CLAUSE", 15, 145);
+    doc.text("3. PROPOSED RESOLUTION ACTION", 15, 155);
 
     doc.setFont("Helvetica", "italic");
     doc.setFontSize(9);
     doc.setTextColor(254, 218, 215);
-    doc.text('\"Enterprise systems shall follow a 90-day password rotation cycle. EMEA regional systems', 15, 152);
-    doc.text('may extend the rotation period to 180 days only under documented regional compliance', 15, 157);
-    doc.text('exemptions approved by the central governance team.\"', 15, 162);
+    doc.text(doc.splitTextToSize(activeConflict.recommendation, 180), 15, 162);
 
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(200, 16, 46);
-    doc.text(`Applied Resolution Action Status: ${isResolved ? "COMPLETED" : "PENDING REVIEW"}`, 15, 172);
+    doc.text(`Applied Resolution Action Status: ${isResolved ? "COMPLETED" : "PENDING REVIEW"}`, 15, 190);
 
     doc.setDrawColor(200, 16, 46);
-    doc.line(15, 180, 195, 180);
+    doc.line(15, 198, 195, 198);
 
     // Save File
-    doc.save("Conflict_Report_CON-882.pdf");
+    doc.save(`Conflict_Report_${activeConflict.analysis_id}.pdf`);
     setReportState('downloaded');
 
     // Update timeline
@@ -225,7 +262,7 @@ export default function ConflictAnalysis() {
         {
           time: '09:38 AM',
           title: 'Conflict Resolved & Closed',
-          desc: 'Score increased to 97%. Pipeline closed.'
+          desc: 'Score increased. Pipeline closed.'
         }
       ];
     });
@@ -235,11 +272,15 @@ export default function ConflictAnalysis() {
     }
   };
 
-  const loadingSteps = [
-    'Reading Policy A (Global Password Policy)...',
-    'Reading Policy B (EMEA Regional Standard)...',
+  const loadingSteps = activeConflict ? [
+    `Reading Policy A: ${activeConflict.source_policy_id}...`,
+    `Reading Policy B: ${activeConflict.target_policy_id}...`,
     'Finding matching obligations and override clauses...',
-    '❌ Conflict Found: POL-GBL-204 [Sec 4.2] ↔ POL-REG-EMEA-08 [Sec 3.1]'
+    `❌ Conflict Found: ${activeConflict.source_obligation_id} ↔ ${activeConflict.target_obligation_id}`
+  ] : [
+    'Loading conflicts from knowledge graph...',
+    'Evaluating policy repository...',
+    'Analyzing conflict index...'
   ];
 
   const pdfSteps = [
@@ -259,37 +300,10 @@ export default function ConflictAnalysis() {
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#0A1220] z-[200] flex flex-col justify-center items-center text-center p-8 space-y-8"
+            className="fixed inset-0 bg-[#0A1220] z-[200] flex flex-col justify-center items-center text-center p-8 space-y-4"
           >
-            <div className="relative flex justify-center items-center">
-              <div className="w-16 h-16 rounded-full border-4 border-[#C8102E]/20 border-t-[#C8102E] animate-spin" />
-              <span className="material-symbols-outlined text-[#C8102E] absolute text-2xl animate-pulse">
-                compare_arrows
-              </span>
-            </div>
-
-            <div className="space-y-4 max-w-md">
-              <h3 className="font-headline text-lg font-bold text-white uppercase tracking-wider">
-                Cross-Policy Comparison Engine
-              </h3>
-              
-              <div className="space-y-2 text-left bg-[#111827] border border-[#2A3447] p-5 rounded-xl shadow-lg">
-                {loadingSteps.map((stepMsg, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-center gap-2.5 text-xs transition-opacity duration-300 ${
-                      idx === loadStep ? 'opacity-100 text-[#C8102E] font-bold' :
-                      idx < loadStep ? 'opacity-40 text-green-400 font-semibold' : 'opacity-10 text-[#fedad7]'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[16px]">
-                      {idx < loadStep ? 'check_circle' : idx === loadStep ? 'sync' : 'hourglass_empty'}
-                    </span>
-                    <span>{stepMsg}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="w-10 h-10 rounded-full border-4 border-[#C8102E]/20 border-t-[#C8102E] animate-spin" />
+            <span className="text-xs text-[#e8bcb9] opacity-75">Querying cross-policy comparison index...</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -337,7 +351,7 @@ export default function ConflictAnalysis() {
       </AnimatePresence>
 
       {/* Main Analysis Workflow */}
-      {!loading && (
+      {!loading && activeConflict && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -351,17 +365,34 @@ export default function ConflictAnalysis() {
                 <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider ${
                   isResolved ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 'bg-[#C8102E] text-white'
                 }`}>
-                  {isResolved ? 'Resolved' : 'Critical Severity'}
+                  {isResolved ? 'Resolved' : `${activeConflict.severity} Severity`}
                 </span>
                 <span className="text-[10px] bg-white/5 border border-[#2A3447] text-[#e8bcb9] px-2 py-0.5 rounded font-code">
-                  Conflict ID: CON-882
+                  Conflict ID: {activeConflict.analysis_id}
                 </span>
+
+                {conflicts.length > 1 && (
+                  <select
+                    value={activeIdx}
+                    onChange={(e) => {
+                      setActiveIdx(Number(e.target.value));
+                      setIsResolved(false);
+                    }}
+                    className="text-[10px] bg-[#0A1220] border border-[#2A3447] text-[#fedad7] rounded px-1.5 py-0.5 focus:outline-none ml-2"
+                  >
+                    {conflicts.map((c, index) => (
+                      <option key={c.analysis_id} value={index}>
+                        Switch Conflict ({c.analysis_id})
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
               <h2 className="font-headline text-lg font-bold text-white">
-                Password Rotation Policy Conflict
+                {activeConflict.source_policy_id} ↔ {activeConflict.target_policy_id} Contradiction
               </h2>
               <p className="text-xs text-[#e8bcb9]">
-                Affected Departments: <span className="text-white font-semibold">Global Security • EMEA Operations</span>
+                Affected Documents: <span className="text-white font-semibold">{activeConflict.source_policy_id} • {activeConflict.target_policy_id}</span>
                 <span className="mx-2 opacity-30">|</span>
                 Status: <span className={isResolved ? "text-green-400 font-bold" : "text-[#C8102E] font-bold"}>{isResolved ? "Resolved" : "Open Conflict"}</span>
               </p>
@@ -389,15 +420,11 @@ export default function ConflictAnalysis() {
                 {/* Policy A */}
                 <div className="flex-1 bg-[#0A1220]/50 border border-[#2A3447] p-5 rounded-lg space-y-3 relative">
                   <div className="flex justify-between items-center text-[10px] text-[#e8bcb9] opacity-60">
-                    <span>POL-GBL-204 [Sec 4.2]</span>
-                    <span className="font-bold">Global Policy</span>
+                    <span className="truncate max-w-[150px]">{activeConflict.source_obligation_id}</span>
+                    <span className="font-bold">Policy A</span>
                   </div>
                   <p className="text-xs text-[#fedad7] leading-relaxed">
-                    "All system credentials must be subject to a strict rotation cycle of{' '}
-                    <span className="bg-[#C8102E]/25 text-[#ffadaa] px-1 rounded font-bold border border-[#C8102E]/40">
-                      90 Days
-                    </span>
-                    ."
+                    "{oblTextA}"
                   </p>
                 </div>
 
@@ -410,15 +437,11 @@ export default function ConflictAnalysis() {
                 {/* Policy B */}
                 <div className="flex-1 bg-[#0A1220]/50 border border-[#2A3447] p-5 rounded-lg space-y-3 relative text-right">
                   <div className="flex justify-between items-center text-[10px] text-[#e8bcb9] opacity-60 flex-row-reverse">
-                    <span>POL-REG-EMEA-08 [Sec 3.1]</span>
-                    <span className="font-bold">EMEA Standard</span>
+                    <span className="truncate max-w-[150px]">{activeConflict.target_obligation_id}</span>
+                    <span className="font-bold">Policy B</span>
                   </div>
                   <p className="text-xs text-[#fedad7] leading-relaxed">
-                    "EMEA regional operations may implement local settings up to{' '}
-                    <span className="bg-[#C8102E]/25 text-[#ffadaa] px-1 rounded font-bold border border-[#C8102E]/40">
-                      180 Days
-                    </span>
-                    ."
+                    "{oblTextB}"
                   </p>
                 </div>
               </div>
@@ -426,10 +449,10 @@ export default function ConflictAnalysis() {
               {/* ✨ AI Merged Clause Proposal */}
               <div className="p-4 bg-[#C8102E]/5 border border-[#C8102E]/20 rounded-lg text-left space-y-2">
                 <p className="text-[10px] text-[#C8102E] font-bold uppercase tracking-wider">
-                  ✨ AI Recommended Clause Draft
+                  ✨ AI Recommended Resolution Draft
                 </p>
                 <p className="text-xs text-[#fedad7] leading-relaxed italic">
-                  "Enterprise systems shall follow a 90-day password rotation cycle. EMEA regional systems may extend the rotation period to 180 days only under documented regional compliance exemptions approved by the central governance team."
+                  "{activeConflict.recommendation}"
                 </p>
               </div>
             </div>
@@ -443,14 +466,14 @@ export default function ConflictAnalysis() {
                 
                 <div className="space-y-3 text-xs">
                   <div className="bg-[#0A1220]/40 p-3 rounded border border-[#2A3447]/50">
-                    <p className="text-[10px] text-[#e8bcb9] opacity-50 uppercase tracking-widest mb-1">Root Cause</p>
-                    <p className="text-white font-medium">Regional override overrides enterprise global mandate.</p>
+                    <p className="text-[10px] text-[#e8bcb9] opacity-50 uppercase tracking-widest mb-1">Conflict Description</p>
+                    <p className="text-white font-medium leading-relaxed">{activeConflict.reasoning}</p>
                   </div>
 
                   <div className="bg-[#0A1220]/40 p-3 rounded border border-[#2A3447]/50 flex justify-between items-center">
                     <div>
                       <p className="text-[10px] text-[#e8bcb9] opacity-50 uppercase tracking-widest mb-1">Business Impact</p>
-                      <p className="text-white font-medium">High Severity</p>
+                      <p className="text-white font-medium">{activeConflict.severity} Severity</p>
                     </div>
                     <span className="text-[#C8102E] material-symbols-outlined">warning</span>
                   </div>
@@ -458,7 +481,7 @@ export default function ConflictAnalysis() {
                   <div className="bg-[#0A1220]/40 p-3 rounded border border-[#2A3447]/50 flex justify-between items-center">
                     <div>
                       <p className="text-[10px] text-[#e8bcb9] opacity-50 uppercase tracking-widest mb-1">Risk Classification</p>
-                      <p className="text-white font-medium">GDPR Non-compliance</p>
+                      <p className="text-white font-medium">Regulatory Non-compliance</p>
                     </div>
                     <span className="text-yellow-400 material-symbols-outlined">gavel</span>
                   </div>
@@ -506,7 +529,7 @@ export default function ConflictAnalysis() {
                   </div>
                   <div className="flex items-center gap-2 text-[#fedad7]">
                     <span className="material-symbols-outlined text-green-400 text-sm">check</span>
-                    <span>Notify EMEA administrators</span>
+                    <span>Notify regional administrators</span>
                   </div>
                 </div>
               </div>
@@ -606,6 +629,20 @@ export default function ConflictAnalysis() {
           </div>
 
         </motion.div>
+      )}
+
+      {!loading && conflicts.length === 0 && (
+        <div className="flex flex-col justify-center items-center h-[50vh] text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center">
+            <span className="material-symbols-outlined text-green-400 text-3xl">check_circle</span>
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-headline text-md font-bold text-white">No Policy Conflicts</h3>
+            <p className="text-xs text-[#e8bcb9] opacity-75 max-w-sm">
+              Great news! There are currently no active regulatory contradictions or obligation overrides identified in your repository.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Synchronized Side-by-Side Comparative Document Overlay */}

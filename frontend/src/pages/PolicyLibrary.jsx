@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useOutletContext, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PolicyCard from '../components/PolicyCard';
+import { governanceService } from '../services/governanceService';
 
 export default function PolicyLibrary() {
   const { setActivePolicy, addToast } = useOutletContext();
@@ -18,60 +19,57 @@ export default function PolicyLibrary() {
     version: 'All'
   });
 
-  const policies = [
-    {
-      id: 'POL-GBL-201',
-      title: 'Global Anti-Corruption Policy',
-      status: 'Healthy',
-      department: 'Legal & Compliance',
-      owner: 'Sarah Jenkins',
-      version: 'v2.4',
-      updatedTime: '2h ago',
-      description: "This policy establishes Lexora's zero-tolerance stance on bribery and corruption, outlining mandatory reporting procedures and gift thresholds across all global jurisdictions.",
-      obligations: 12,
-      conflicts: 0,
-      health: 98,
-      icon: 'policy',
-      summary: "The Global Anti-Corruption Policy (v2.4) maintains high alignment with US FCPA and UK Bribery Act requirements. Our analysis identifies strict reporting thresholds for corporate hospitality ($250 USD) and mandates quarterly compliance certifications for all regional directors."
-    },
-    {
-      id: 'POL-GBL-204',
-      title: 'IT Authentication Standards',
-      status: 'Conflict Detected',
-      department: 'Security Operations',
-      owner: 'David Vance',
-      version: 'v1.8',
-      updatedTime: '5h ago',
-      description: 'This policy governs employee authentication, password requirements and MFA enforcement protocols across all enterprise-level cloud and local environments.',
-      obligations: 8,
-      conflicts: 2,
-      health: 82,
-      icon: 'lock',
-      summary: "This policy coordinates closely with general cyber defence architectures, but contains a severe password rotation frequency mismatch with local European regulations."
-    },
-    {
-      id: 'POL-HR-302',
-      title: 'Remote Work Guidelines',
-      status: 'Healthy',
-      department: 'Human Resources',
-      owner: 'Emma Stone',
-      version: 'v3.1',
-      updatedTime: '1d ago',
-      description: 'Defines expectations for remote and hybrid work arrangements, including core hours, communication standards, and hardware reimbursement policies.',
-      obligations: 15,
-      conflicts: 0,
-      health: 96,
-      icon: 'description',
-      summary: "Provides details about physical and digital security requirements when executing operations outside regional business offices."
+  const [policies, setPolicies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchPolicies = async () => {
+    try {
+      const data = await governanceService.getPolicies();
+      const mapped = data.map(p => {
+        let icon = 'policy';
+        let dept = 'Compliance & Legal';
+        if (p.policy_name.toLowerCase().includes('password') || p.policy_name.toLowerCase().includes('auth')) {
+          icon = 'lock';
+          dept = 'Security Operations';
+        } else if (p.policy_name.toLowerCase().includes('cloud') || p.policy_name.toLowerCase().includes('aws')) {
+          icon = 'cloud';
+          dept = 'Cloud Operations';
+        }
+        return {
+          id: p.policy_id,
+          title: p.policy_name,
+          status: p.conflict_count > 0 ? 'Conflict Detected' : 'Healthy',
+          department: dept,
+          owner: 'Compliance Team',
+          version: 'v1.0',
+          updatedTime: 'Recently',
+          description: `Comprehensive compliance scan for ${p.policy_name} completed with an overall score of ${p.governance_score}%. Identified ${p.conflict_count} active conflicts.`,
+          obligations: p.obligation_count,
+          conflicts: p.conflict_count,
+          health: p.governance_score,
+          icon: icon,
+          summary: p.recommendations?.join('. ') || 'No recommendations generated.'
+        };
+      });
+      setPolicies(mapped);
+    } catch (err) {
+      console.error("Failed to load policies", err);
+      if (addToast) addToast(err.message || "Failed to load policy library.", "error");
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchPolicies();
+  }, []);
 
   // Unique options extracted for dropdown menus
   const filterOptions = {
-    department: ['All', 'Legal & Compliance', 'Security Operations', 'Human Resources'],
-    owner: ['All', 'Sarah Jenkins', 'David Vance', 'Emma Stone'],
+    department: ['All', 'Compliance & Legal', 'Security Operations', 'Cloud Operations'],
+    owner: ['All', 'Compliance Team'],
     status: ['All', 'Healthy', 'Conflict Detected'],
-    version: ['All', 'v2.4', 'v1.8', 'v3.1']
+    version: ['All', 'v1.0']
   };
 
   const handleOpenPolicy = (policy) => {
@@ -111,6 +109,15 @@ export default function PolicyLibrary() {
 
     return matchesSearch && matchesDept && matchesOwner && matchesStatus && matchesVersion;
   });
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[50vh] space-y-4">
+        <div className="w-10 h-10 rounded-full border-4 border-[#C8102E]/20 border-t-[#C8102E] animate-spin" />
+        <span className="text-xs text-[#e8bcb9] opacity-75">Loading policy library...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

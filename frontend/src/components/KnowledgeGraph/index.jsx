@@ -243,11 +243,66 @@ const INITIAL_EDGES = [
   }
 ];
 
+import { graphService } from '../../services/graphService';
+
+const layoutNodes = (nodesList) => {
+  // Group nodes by type
+  const groups = {};
+  nodesList.forEach(n => {
+    const t = (n.node_type || 'Policy').toLowerCase();
+    if (!groups[t]) groups[t] = [];
+    groups[t].push(n);
+  });
+
+  const typesOrder = ['policy', 'obligation', 'conflict', 'analysis', 'regulation', 'department'];
+  const mapped = [];
+
+  typesOrder.forEach((type, layerIndex) => {
+    const list = groups[type] || [];
+    const y = 50 + layerIndex * 150;
+    const total = list.length;
+    list.forEach((n, idx) => {
+      // Center-distribute horizontally
+      const x = 400 + (idx - (total - 1) / 2) * 260;
+      
+      let icon = 'description';
+      if (type === 'regulation') icon = 'gavel';
+      else if (type === 'obligation') icon = 'shield_with_heart';
+      else if (type === 'conflict') icon = 'warning';
+      else if (type === 'department') icon = 'corporate_fare';
+      else if (type === 'analysis') icon = 'smart_toy';
+
+      mapped.push({
+        id: n.node_id,
+        type: 'customNode',
+        position: { x, y },
+        data: {
+          type: type === 'policy' ? 'policy' : type === 'obligation' ? 'obligation' : type === 'conflict' ? 'conflict' : 'department',
+          icon: icon,
+          label: n.attributes?.topic || n.label,
+          subtext: n.node_id,
+          description: n.attributes?.text || n.label,
+          owner: n.attributes?.owner || 'Governance Core',
+          department: n.attributes?.department || 'Information Security',
+          lastUpdated: 'Today'
+        }
+      });
+    });
+  });
+
+  return mapped;
+};
+
 export default function KnowledgeGraph() {
   const nodeTypesMap = useMemo(() => ({ customNode: CustomNode }), []);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  // Backend loaded data state
+  const [loading, setLoading] = useState(true);
+  const [initialNodes, setInitialNodes] = useState([]);
+  const [initialEdges, setInitialEdges] = useState([]);
 
   // States
   const [selectedNodeData, setSelectedNodeData] = useState(null);
@@ -260,6 +315,51 @@ export default function KnowledgeGraph() {
   const [selectedDept, setSelectedDept] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
 
+  // Load graph data from backend
+  useEffect(() => {
+    const fetchGraph = async () => {
+      try {
+        setLoading(true);
+        const data = await graphService.getGraph();
+        
+        const mappedNodes = layoutNodes(data.nodes || []);
+        const mappedEdges = (data.edges || []).map((e, idx) => {
+          const isConflict = e.relationship === 'CONFLICTS_WITH';
+          const isObl = e.relationship === 'HAS_OBLIGATION';
+          return {
+            id: `e-${idx}-${e.source}-${e.target}`,
+            source: e.source,
+            target: e.target,
+            label: e.relationship,
+            animated: isConflict,
+            style: {
+              stroke: isConflict ? '#EF4444' : isObl ? '#10B981' : '#3B82F6',
+              strokeWidth: isConflict ? 2.5 : 2
+            }
+          };
+        });
+
+        setInitialNodes(mappedNodes);
+        setInitialEdges(mappedEdges);
+        setNodes(mappedNodes);
+        setEdges(mappedEdges);
+      } catch (err) {
+        console.warn("Failed to load graph data from engine, setting fallback:", err);
+        // Fallback layout using initial mock nodes
+        const fallbackNodes = INITIAL_NODES;
+        const fallbackEdges = INITIAL_EDGES;
+        setInitialNodes(fallbackNodes);
+        setInitialEdges(fallbackEdges);
+        setNodes(fallbackNodes);
+        setEdges(fallbackEdges);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGraph();
+  }, []);
+
   // Handle outside click to clear selected node details panel
   const handleClearSelected = useCallback(() => {
     setSelectedNodeData(null);
@@ -267,7 +367,8 @@ export default function KnowledgeGraph() {
 
   // Filter application
   useEffect(() => {
-    let filteredNodes = INITIAL_NODES.map(node => {
+    if (loading) return;
+    let filteredNodes = initialNodes.map(node => {
       let isDimmed = false;
       
       // Filter by Search Query
@@ -293,15 +394,16 @@ export default function KnowledgeGraph() {
     });
 
     setNodes(filteredNodes);
-  }, [searchQuery, selectedDept, selectedType, setNodes]);
+  }, [searchQuery, selectedDept, selectedType, initialNodes, loading, setNodes]);
 
   // Node Hover logic
   const handleNodeMouseEnter = useCallback((event, node) => {
+    if (loading) return;
     setHoveredNodeId(node.id);
 
     // Find connected nodes
     const connectedNodeIds = new Set([node.id]);
-    INITIAL_EDGES.forEach(edge => {
+    initialEdges.forEach(edge => {
       if (edge.source === node.id) connectedNodeIds.add(edge.target);
       if (edge.target === node.id) connectedNodeIds.add(edge.source);
     });
@@ -330,9 +432,10 @@ export default function KnowledgeGraph() {
         }
       }))
     );
-  }, [setNodes, setEdges]);
+  }, [initialEdges, loading, setNodes, setEdges]);
 
   const handleNodeMouseLeave = useCallback(() => {
+    if (loading) return;
     setHoveredNodeId(null);
 
     // Reset nodes opacity
@@ -348,8 +451,21 @@ export default function KnowledgeGraph() {
     );
 
     // Reset edges styles
-    setEdges(INITIAL_EDGES);
-  }, [setNodes, setEdges]);
+    setEdges(prevEdges =>
+      prevEdges.map(e => {
+        const isConflict = e.label === 'CONFLICTS_WITH' || e.label === 'conflicts with';
+        return {
+          ...e,
+          animated: isConflict || e.animated,
+          style: {
+            ...e.style,
+            opacity: 1,
+            strokeWidth: isConflict ? 2.5 : 2
+          }
+        };
+      })
+    );
+  }, [loading, setNodes, setEdges]);
 
   // Node click details panel trigger
   const handleNodeClick = useCallback((event, node) => {

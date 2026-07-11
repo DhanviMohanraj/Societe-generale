@@ -4,13 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import UploadZone from '../components/UploadZone';
 import StatusBadge from '../components/StatusBadge';
 
+import { repositoryService } from '../services/repositoryService';
+import { pipelineService } from '../services/pipelineService';
+import { governanceService } from '../services/governanceService';
+
 const PIPELINE_STAGES = [
-  { name: 'Reading Policies', msg: 'Reading uploaded documents...' },
-  { name: 'Extracting Obligations', msg: 'Extracting obligations...' },
-  { name: 'Normalizing Policies', msg: 'Standardizing policy language...' },
-  { name: 'Building Knowledge Graph', msg: 'Building semantic knowledge...' },
-  { name: 'Detecting Policy Conflicts', msg: 'Detecting contradictions...' },
-  { name: 'Generating AI Health Report', msg: 'Generating executive report...' }
+  { name: 'Uploading', msg: 'Uploading policy file...' },
+  { name: 'Extraction', msg: 'Extracting policy obligations...' },
+  { name: 'Normalization', msg: 'Standardizing obligation formats...' },
+  { name: 'Knowledge Records', msg: 'Vectorizing and generating knowledge...' },
+  { name: 'Repository', msg: 'Registering in policy repository...' },
+  { name: 'Similarity', msg: 'Building FAISS index & similarity matching...' },
+  { name: 'AI Reasoning', msg: 'Comparing obligations & identifying conflicts...' },
+  { name: 'Knowledge Graph', msg: 'Compiling entity-relationship graph...' },
+  { name: 'Governance Analytics', msg: 'Calculating risk and health scores...' }
 ];
 
 export default function Workspace() {
@@ -19,18 +26,15 @@ export default function Workspace() {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
 
-  // Initial uploads list
-  const [uploads, setUploads] = useState([
-    { name: 'Cybersecurity_Protocol_v4.pdf', status: 'Verified', time: '2 hours ago' },
-    { name: 'Employee_Code_Conduct_2024.docx', status: 'Pending Review', time: '5 hours ago' },
-    { name: 'Data_Privacy_Standard_EMEA.pdf', status: 'Verified', time: '12 hours ago' },
-    { name: 'Remote_Work_Access_Guide.pdf', status: 'Conflict Detected', time: '14 hours ago' },
-  ]);
+  // Uploaded and registered policies list
+  const [uploads, setUploads] = useState([]);
+  const [loadingPolicies, setLoadingPolicies] = useState(false);
 
   // Uploading progress tracking
   const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
-  // Processing state: currentStep ranges from -1 (idle) to 5 (active steps), and 6 (completed)
+  // Processing state: currentStep ranges from -1 (idle) to 8 (active steps), and 9 (completed)
   const [pipeline, setPipeline] = useState({
     active: false,
     currentStep: -1,
@@ -40,134 +44,192 @@ export default function Workspace() {
 
   const [aiInsight, setAiInsight] = useState({
     title: 'AI Insight',
-    text: 'Two uploaded policies contain conflicting password rotation rules (90 vs 180 days).',
-    linkText: 'Review Conflict',
-    hasConflict: true
+    text: 'System is ready. Upload a policy document to check for regulatory conflicts.',
+    linkText: 'View Policy Library',
+    hasConflict: false
   });
+
+  // Fetch policies on mount and populate
+  const fetchPolicies = async () => {
+    setLoadingPolicies(true);
+    try {
+      const snapshot = await governanceService.getSnapshot();
+      if (snapshot && snapshot.policy_summaries) {
+        const mapped = snapshot.policy_summaries.map(p => ({
+          name: p.policy_name,
+          status: p.conflict_count > 0 ? 'Conflict Detected' : 'Verified',
+          time: 'Active'
+        }));
+        setUploads(mapped);
+
+        if (snapshot.critical_conflicts > 0) {
+          setAiInsight({
+            title: 'AI Insight (Conflict Alert)',
+            text: `Enterprise governance shows ${snapshot.critical_conflicts} critical conflicts and ${snapshot.duplicate_requirements} duplicate requirements. Overall risk is ${snapshot.overall_risk_level}.`,
+            linkText: 'Analyze Conflicts',
+            hasConflict: true
+          });
+        } else {
+          setAiInsight({
+            title: 'AI Insight',
+            text: 'Central compliance alignment is clean. No active conflicts identified.',
+            linkText: 'View Policy Library',
+            hasConflict: false
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch governance snapshot, loading raw policies:", err);
+      try {
+        const rawPolicies = await repositoryService.getPolicies();
+        const mapped = rawPolicies.map(p => ({
+          name: p.policy_name,
+          status: p.status === 'ACTIVE' ? 'Verified' : p.status,
+          time: 'Active'
+        }));
+        setUploads(mapped);
+      } catch (repoErr) {
+        console.error("Failed to load policies:", repoErr);
+      }
+    } finally {
+      setLoadingPolicies(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPolicies();
+  }, []);
+
+  // Poll pipeline progress status when pipeline is active
+  useEffect(() => {
+    let pollInterval = null;
+    if (pipeline.active) {
+      pollInterval = setInterval(async () => {
+        try {
+          const status = await pipelineService.getPipelineStatus();
+          
+          const stepMap = {
+            "Extraction": 1,
+            "Normalization": 2,
+            "Vectorization": 3,
+            "Repository": 4,
+            "Similarity": 5,
+            "Analysis": 6,
+            "Knowledge Graph": 7,
+            "Governance": 8,
+            "Completed": 9
+          };
+          
+          const stepVal = stepMap[status.current_step] ?? 0;
+          setPipeline(prev => {
+            if (!prev.active) return prev;
+            return {
+              ...prev,
+              currentStep: stepVal
+            };
+          });
+        } catch (err) {
+          console.error("Failed to poll status", err);
+        }
+      }, 1000);
+    }
+    return () => {
+      if (pollInterval) clearInterval(pollInterval);
+    };
+  }, [pipeline.active]);
 
   // Filtered uploads list
   const filteredUploads = uploads.filter(u =>
     u.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Triggered when files are dropped or browsed
-  const handleFilesUploaded = (files) => {
+  // Triggered when file is uploaded via UploadZone
+  const handleFilesUploaded = async (files) => {
     const filesList = Array.from(files);
+    if (filesList.length === 0) return;
+
+    const file = filesList[0]; // Process one file at a time as per flow
     
-    // Add to uploading files list to show progress animation
-    const newUploading = filesList.map(f => ({ name: f.name, progress: 0 }));
-    setUploadingFiles(prev => [...prev, ...newUploading]);
-
-    // Simulate upload progress
-    filesList.forEach((file, index) => {
-      let currentProgress = 0;
-      const interval = setInterval(() => {
-        currentProgress += 10;
-        setUploadingFiles(prev =>
-          prev.map(item =>
-            item.name === file.name ? { ...item, progress: currentProgress } : item
-          )
-        );
-
-        if (currentProgress >= 100) {
-          clearInterval(interval);
-          
-          // Remove from upload list and start AI processing pipeline
-          setUploadingFiles(prev => prev.filter(item => item.name !== file.name));
-          startAIProcessing(file.name);
-        }
-      }, 200 + index * 100);
-    });
+    // Add to uploading progress tracking
+    setUploadingFiles([{ name: file.name, progress: 0 }]);
+    
+    try {
+      const response = await repositoryService.uploadPolicy(file);
+      // Update progress to 100% on success
+      setUploadingFiles([{ name: file.name, progress: 100 }]);
+      setTimeout(() => {
+        setUploadingFiles([]);
+        setUploadedFile(file.name);
+        addToast("Upload Successful", "success");
+      }, 500);
+    } catch (err) {
+      setUploadingFiles([]);
+      addToast(err.message || "Failed to upload file.", "error");
+    }
   };
 
-  // Timed AI processing pipeline simulation
-  const startAIProcessing = (fileName) => {
+  // Run the backend AI processing pipeline
+  const startAIProcessing = async () => {
+    if (!uploadedFile) return;
+
     setPipeline({
       active: true,
-      currentStep: 0,
-      fileName: fileName,
+      currentStep: 0, // 0 = Uploading completed, pipeline starting
+      fileName: uploadedFile,
       failedStep: -1
     });
 
-    const stepDuration = 1400;
+    try {
+      addToast("AI Pipeline triggered", "info");
 
-    // Transition between the 6 pipeline stages
-    const triggerNextStep = (step) => {
-      if (step < 6) {
-        setTimeout(() => {
-          setPipeline(prev => {
-            if (!prev.active) return prev;
-            return {
-              ...prev,
-              currentStep: step
-            };
-          });
-          triggerNextStep(step + 1);
-        }, stepDuration);
-      } else {
-        // Pipeline Completion
-        setTimeout(() => {
-          setPipeline(prev => {
-            if (!prev.active) return prev;
-            return {
-              ...prev,
-              currentStep: 6,
-              active: false
-            };
-          });
+      // Step 1: Kick off the pipeline — backend returns 202 immediately
+      await pipelineService.runPipeline(uploadedFile);
 
-          // Show success toast
-          addToast("Analysis completed successfully", "success");
+      // Step 2: Poll until the backend marks it as Completed or Failed
+      await pipelineService.waitForCompletion(
+        (status) => {
+          const stepMap = {
+            "Starting": 0,
+            "Extraction": 1,
+            "Normalization": 2,
+            "Vectorization": 3,
+            "Repository": 4,
+            "Similarity": 5,
+            "Analysis": 6,
+            "Knowledge Graph": 7,
+            "Governance": 8,
+            "Completed": 9
+          };
+          const stepVal = stepMap[status.current_step] ?? pipeline.currentStep;
+          setPipeline(prev => prev.active ? { ...prev, currentStep: stepVal } : prev);
+        },
+        2000,   // poll every 2 seconds
+        600000  // give up after 10 minutes
+      );
 
-          // Determine status dynamically
-          let status = 'Verified';
-          if (fileName.toLowerCase().includes('draft') || fileName.toLowerCase().includes('review')) {
-            status = 'Pending Review';
-          } else if (fileName.toLowerCase().includes('conflict') || fileName.toLowerCase().includes('restricted')) {
-            status = 'Conflict Detected';
-          }
+      setPipeline(prev => ({ ...prev, active: false, currentStep: 9 }));
 
-          // Append to recent uploads
-          setUploads(prev => [
-            { name: fileName, status, time: 'Just now' },
-            ...prev
-          ]);
+      addToast("Pipeline Completed", "success");
+      addToast("Governance Updated", "success");
+      addToast("Graph Built", "success");
 
-          // Set Dynamic AI Insights
-          if (fileName.toLowerCase().includes('gdpr') || fileName.toLowerCase().includes('privacy')) {
-            setAiInsight({
-              title: 'AI Insight (GDPR Focus)',
-              text: `Privacy clause conflict detected in: ${fileName}. The data storage duration overrides the standard global 7-year mandate.`,
-              linkText: 'Analyze Privacy Mismatches',
-              hasConflict: true
-            });
-          } else if (status === 'Conflict Detected') {
-            setAiInsight({
-              title: 'AI Insight (Conflict Alert)',
-              text: `Security clearance levels mismatch found in newly uploaded policy: ${fileName}.`,
-              linkText: 'Inspect Mismatches',
-              hasConflict: true
-            });
-          } else {
-            setAiInsight({
-              title: 'AI Insight',
-              text: `Successfully cross-referenced ${fileName} against 14 active policies. No new conflicts identified.`,
-              linkText: 'View Library Status',
-              hasConflict: false
-            });
-          }
-
-        }, stepDuration);
-      }
-    };
-
-    triggerNextStep(1);
+      setUploadedFile(null);
+      fetchPolicies();
+    } catch (err) {
+      setPipeline(prev => ({
+        ...prev,
+        active: false,
+        failedStep: prev.currentStep >= 0 ? prev.currentStep : 1
+      }));
+      addToast(err.message || "Pipeline execution encountered an error.", "error");
+    }
   };
+
 
   // Get current active pipeline messaging
   const getPipelineMessage = () => {
-    if (pipeline.currentStep === 6) return 'Exporting PDF... Analysis complete!';
-    if (pipeline.currentStep >= 0 && pipeline.currentStep < 6) {
+    if (pipeline.currentStep === 9) return 'Analysis complete!';
+    if (pipeline.currentStep >= 0 && pipeline.currentStep < 9) {
       return PIPELINE_STAGES[pipeline.currentStep].msg;
     }
     return 'System idle. Upload a document to start analysis.';
@@ -175,10 +237,9 @@ export default function Workspace() {
 
   // Calculate dynamic progress percentage
   const getProgressPercent = () => {
-    if (pipeline.currentStep === 6) return 100;
+    if (pipeline.currentStep === 9) return 100;
     if (pipeline.currentStep === -1) return 0;
-    // Maps steps 0-5 incrementally up to ~90%, and 6 completes to 100%
-    return Math.round(((pipeline.currentStep + 1) / 6) * 100);
+    return Math.round((pipeline.currentStep / 9) * 100);
   };
 
   return (
@@ -359,13 +420,33 @@ export default function Workspace() {
               )}
             </div>
             
-            {/* 6 Stage Timeline */}
+            {/* 9 Stage Timeline */}
             <div className="space-y-4">
+              {uploadedFile && !pipeline.active && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-[#C8102E]/10 border border-[#C8102E]/30 p-4 rounded-xl text-center space-y-3 mb-4 inner-glow"
+                >
+                  <div className="flex items-center gap-2.5 justify-center text-[#fedad7]">
+                    <span className="material-symbols-outlined text-[#C8102E] animate-pulse">description</span>
+                    <span className="text-xs font-bold truncate max-w-[200px]">{uploadedFile}</span>
+                  </div>
+                  <button
+                    onClick={startAIProcessing}
+                    className="w-full bg-gradient-to-br from-[#C8102E] to-[#B11226] text-white font-bold py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#C8102E]/25"
+                  >
+                    <span className="material-symbols-outlined text-sm">play_arrow</span>
+                    Process Document
+                  </button>
+                </motion.div>
+              )}
+
               {PIPELINE_STAGES.map((stage, idx) => {
                 // Determine stage state
                 let state = 'waiting'; // waiting | running | completed | failed
                 
-                if (pipeline.currentStep === 6) {
+                if (pipeline.currentStep === 9) {
                   state = 'completed';
                 } else if (pipeline.currentStep > idx) {
                   state = 'completed';

@@ -21,8 +21,8 @@
         "policy_id": "POL-002",
         "policy_name": "test_policy.pdf",
         "recommendations": [
-            "Immediately review conflicting security policies."
+            "Maintain current policy compliance levels. Run periodic reviews."
         ],
-        "priority": "CRITICAL"
+        "priority": "LOW"
     }
 ]

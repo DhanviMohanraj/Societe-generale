@@ -108,7 +108,8 @@ class GovernanceSnapshotService:
                 critical_conflicts=metrics.critical_conflicts,
                 average_ai_confidence=metrics.average_ai_confidence,
                 recommendation_priority=priority,
-                recommendations=recs
+                recommendations=recs,
+                obligation_count=metrics.obligation_count
             )
             policy_summaries.append(policy_summary)
 

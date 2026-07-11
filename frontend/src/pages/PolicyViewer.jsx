@@ -2,158 +2,187 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { governanceService } from '../services/governanceService';
+import { graphService } from '../services/graphService';
+import { pipelineService } from '../services/pipelineService';
+
 export default function PolicyViewer() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToast, setIsCopilotOpen } = useOutletContext();
 
+  const [policy, setPolicy] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [aiState, setAiState] = useState('idle'); // 'idle' | 'analyzing' | 'completed'
   const [aiProgress, setAiProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [highlightedClause, setHighlightedClause] = useState(null); // { id: string, type: 'obligation' | 'conflict' }
 
   const pdfContainerRef = useRef(null);
-  const clauseRefs = {
-    hospitality: useRef(null),
-    vendors: useRef(null),
-    rotation: useRef(null),
-    conflict: useRef(null)
-  };
+  const clauseRefs = useRef({});
 
-  // Mock Policy details
-  const policyDatabase = {
-    'POL-GBL-201': {
-      id: 'POL-GBL-201',
-      title: 'Global Anti-Corruption Policy',
-      department: 'Legal & Compliance',
-      version: 'v2.4',
-      pages: [
+  // Fetch policy detail scorecard and subgraph
+  const fetchPolicyData = async () => {
+    try {
+      setLoading(true);
+      const report = await governanceService.getPolicyReport(id);
+      const graphData = await graphService.getPolicyGraph(id);
+
+      // Create clause refs
+      graphData.neighbouring_obligations.forEach(obl => {
+        if (!clauseRefs.current[obl.node_id]) {
+          clauseRefs.current[obl.node_id] = React.createRef();
+        }
+      });
+      graphData.relationships.forEach((r, idx) => {
+        const key = `conf-${idx}`;
+        if (!clauseRefs.current[key]) {
+          clauseRefs.current[key] = React.createRef();
+        }
+      });
+
+      const mappedObligations = graphData.neighbouring_obligations.map(obl => ({
+        id: obl.node_id,
+        title: obl.attributes?.topic || 'Policy Obligation',
+        desc: obl.attributes?.text || obl.label
+      }));
+
+      const mappedConflicts = graphData.relationships
+        .filter(r => r.relationship === 'CONFLICTS_WITH')
+        .map((r, idx) => {
+          const src = graphData.neighbouring_obligations.find(o => o.node_id === r.source) || { label: r.source };
+          const tgt = graphData.neighbouring_obligations.find(o => o.node_id === r.target) || { label: r.target };
+          const srcTopic = src.attributes?.topic || src.label || 'Obligation';
+          const tgtTopic = tgt.attributes?.topic || tgt.label || 'Obligation';
+          return {
+            id: `conf-${idx}`,
+            title: `${srcTopic} ↔ ${tgtTopic}`,
+            desc: `Clause contradiction: "${src.attributes?.text?.slice(0, 80) || src.label}" conflicts with "${tgt.attributes?.text?.slice(0, 80) || tgt.label}" — confidence: ${(r.attributes?.confidence * 100 || 90).toFixed(0)}%.`,
+            target: '/conflicts'
+          };
+        });
+
+      const pages = [
         {
           num: 1,
-          title: '1. EXECUTIVE STATEMENT',
-          content: 'This Global Anti-Corruption Policy establishes Lexora\'s zero-tolerance stance on bribery and corruption. It applies to all operations, subsidiaries, directors, and contract workers globally.'
-        },
-        {
-          num: 2,
-          title: '2. GIFTS & CORPORATE HOSPITALITY',
-          content: 'Any corporate hospitality gifts offered or received by any employee exceeding $250 USD must be logged in the Global Registry within 48 hours of receipt. Mandatory reporting is required for all instances.',
-          clauseId: 'hospitality',
-          clauseText: 'Gifts exceeding $250 must be logged in the Global Registry within 48 hours.'
-        },
-        {
-          num: 3,
-          title: '3. THIRD-PARTY DUE DILIGENCE',
-          content: 'All third-party vendors operating outside the European Union require a Level 2 compliance background check before contract issuance. Non-EU vendors require additional background verification.',
-          clauseId: 'vendors',
-          clauseText: 'All non-EU vendors require an L2 background check before contract issuance.'
+          title: '1. Policy Governance Overview',
+          content: `Policy Document Reference: ${report.policy_name}\nEvaluated Risk Level: ${report.risk_level}\nGovernance Scorecard: ${report.governance_score}%\n\nThis policy has been ingested and mapped in the Enterprise Knowledge Graph. Key compliance rules and contradicts are detailed in the AI panel.`
         }
-      ],
-      obligations: [
-        { id: 'hospitality', title: 'Reporting of Hospitality', desc: 'Gifts exceeding $250 must be logged in the Global Registry within 48 hours.' },
-        { id: 'vendors', title: 'Third-Party Due Diligence', desc: 'All non-EU vendors require an L2 background check before contract issuance.' }
-      ],
-      conflicts: [],
-      summary: 'The Global Anti-Corruption Policy (v2.4) maintains high alignment with US FCPA and UK Bribery Act requirements. Our analysis identifies strict reporting thresholds for corporate hospitality ($250 USD) and mandates quarterly compliance certifications.'
-    },
-    'POL-GBL-204': {
-      id: 'POL-GBL-204',
-      title: 'IT Authentication Standards',
-      department: 'Security Operations',
-      version: 'v1.8',
-      pages: [
-        {
-          num: 1,
-          title: '1. SCOPE & IDENTITY MANAGEMENT',
-          content: 'This policy governs employee authentication, password requirements and MFA enforcement protocols across all enterprise-level cloud and local operating environments.'
-        },
-        {
-          num: 2,
-          title: '2. CREDENTIAL ROTATION PERIOD',
-          content: 'All system credentials must be subject to a strict rotation cycle of 90 Days. Central directory managers are responsible for enforcing automatic system locks on accounts failing this timeframe.',
-          clauseId: 'rotation',
-          clauseText: 'Rotation Cycle: 90 Days.'
-        },
-        {
-          num: 3,
-          title: '3. REGIONAL SETTING OVERRIDES',
-          content: 'CONFLICT AREA: Regional operations in the EMEA region may implement local settings up to 180 Days. Note: This exception has not been formally approved by the central compliance registry.',
-          clauseId: 'conflict',
-          clauseText: 'EMEA regional settings allow rotation frequency up to 180 Days.'
-        }
-      ],
-      obligations: [
-        { id: 'rotation', title: 'Credential Rotation Period', desc: 'All system credentials must be subject to a strict rotation cycle of 90 Days.' }
-      ],
-      conflicts: [
-        { id: 'conflict', title: 'EMEA Rotation Overlap', desc: 'EMEA regional settings allow rotation frequency up to 180 Days, directly violating the 90-day Global Standard.', target: '/conflicts' }
-      ],
-      summary: 'This policy governs cloud and operating systems authentication, but contains a severe password rotation frequency conflict with EMEA local setting overrides.'
-    },
-    'POL-HR-302': {
-      id: 'POL-HR-302',
-      title: 'Remote Work Guidelines',
-      department: 'Human Resources',
-      version: 'v3.1',
-      pages: [
-        {
-          num: 1,
-          title: '1. OVERVIEW & REMOTE ACCESS',
-          content: 'Defines expectations for remote and hybrid work arrangements, including core hours, communication standards, and hardware reimbursement policies.'
-        },
-        {
-          num: 2,
-          title: '2. DATA ACCESS SEGREGATION',
-          content: 'Employees working remotely must connect through the virtual private network (VPN) and ensure zero local storage of proprietary client information.'
-        },
-        {
-          num: 3,
-          title: '3. COMPLIANCE OBLIGATIONS',
-          content: 'Provides details about physical and digital security requirements when executing operations outside regional business offices.'
-        }
-      ],
-      obligations: [
-        { id: 'remote_vpn', title: 'Obligatory VPN Access', desc: 'Remote workers must use designated secure VPN portals for all database entries.' }
-      ],
-      conflicts: [],
-      summary: 'Provides detailed HR, hardware reimbursement, and secure remote VPN configurations.'
+      ];
+
+      graphData.neighbouring_obligations.forEach((obl, idx) => {
+        pages.push({
+          num: idx + 2,
+          title: `${idx + 2}. Obligation: ${obl.attributes?.topic || 'Clause Details'}`,
+          content: obl.attributes?.text || obl.label,
+          clauseId: obl.node_id,
+          clauseText: obl.attributes?.text || obl.label
+        });
+      });
+
+      // Derive department from policy name heuristics
+      const policyNameLower = report.policy_name.toLowerCase();
+      const dept = policyNameLower.includes('password') || policyNameLower.includes('auth') || policyNameLower.includes('security')
+        ? 'Security Operations'
+        : policyNameLower.includes('cloud') || policyNameLower.includes('aws') || policyNameLower.includes('azure')
+          ? 'Cloud Operations'
+          : policyNameLower.includes('gdpr') || policyNameLower.includes('privacy') || policyNameLower.includes('data')
+            ? 'Data & Privacy'
+            : 'Compliance & Legal';
+
+      setPolicy({
+        id: report.policy_id,
+        title: report.policy_name,
+        department: dept,
+        version: 'v1.0',
+        pages: pages,
+        obligations: mappedObligations,
+        conflicts: mappedConflicts,
+        summary: report.recommendations?.join('. ') || 'No strategic warnings or policy overlaps detected.'
+      });
+
+      setAiState('completed');
+    } catch (err) {
+      console.warn("Failed to load policy reports dynamically, showing idle:", err);
+      // Fallback policy shell
+      setPolicy({
+        id: id,
+        title: id.endsWith('.pdf') ? id : `${id}.pdf`,
+        department: 'Central Compliance',
+        version: 'v1.0',
+        pages: [
+          {
+            num: 1,
+            title: '1. Ingest Statement',
+            content: `The policy document "${id}" has been registered in the database, but compliance scanning has not run yet. Please trigger analysis in the AI panel.`
+          }
+        ],
+        obligations: [],
+        conflicts: [],
+        summary: 'Document is pending analysis.'
+      });
+      setAiState('idle');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const policy = policyDatabase[id] || policyDatabase['POL-GBL-201'];
+  useEffect(() => {
+    fetchPolicyData();
+  }, [id]);
 
-  const runAIPipeline = () => {
+  // Run AI analysis pipeline for this policy
+  const runAIPipeline = async () => {
+    if (!policy) return;
     setAiState('analyzing');
     setAiProgress(0);
     setActiveStep(0);
     if (addToast) addToast('Kicking off AI Document Analysis...', 'info');
 
-    // Simulate progress increments
-    const totalDuration = 3000; // 3s total
-    const intervalTime = 50;
-    const stepsCount = totalDuration / intervalTime;
-    let stepNumber = 0;
-
-    const interval = setInterval(() => {
-      stepNumber++;
-      const currentProgress = Math.min(Math.round((stepNumber / stepsCount) * 100), 100);
-      setAiProgress(currentProgress);
-
-      // Transition stages based on progress levels
-      if (currentProgress < 25) setActiveStep(0); // Reading clauses
-      else if (currentProgress < 50) setActiveStep(1); // Finding obligations
-      else if (currentProgress < 75) setActiveStep(2); // Comparing enterprise policies
-      else setActiveStep(3); // Generating summary
-
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        setAiState('completed');
-        if (addToast) addToast('Document analysis report generated!', 'success');
+    // Start progress polling
+    const pollInterval = setInterval(async () => {
+      try {
+        const status = await pipelineService.getPipelineStatus();
+        const stepMap = {
+          "Extraction": 1,
+          "Normalization": 2,
+          "Vectorization": 3,
+          "Repository": 4,
+          "Similarity": 5,
+          "Analysis": 6,
+          "Knowledge Graph": 7,
+          "Governance": 8,
+          "Completed": 9
+        };
+        const stepVal = stepMap[status.current_step] ?? 0;
+        setAiProgress(Math.round((stepVal / 9) * 100));
+        
+        if (stepVal < 3) setActiveStep(0);
+        else if (stepVal < 5) setActiveStep(1);
+        else if (stepVal < 7) setActiveStep(2);
+        else setActiveStep(3);
+      } catch (err) {
+        console.error(err);
       }
-    }, intervalTime);
+    }, 1000);
+
+    try {
+      await pipelineService.runPipeline(policy.title);
+      clearInterval(pollInterval);
+      setAiProgress(100);
+      setAiState('completed');
+      if (addToast) addToast('Document analysis report generated!', 'success');
+      // Reload details
+      fetchPolicyData();
+    } catch (err) {
+      clearInterval(pollInterval);
+      setAiState('idle');
+      if (addToast) addToast(err.message || 'Analysis pipeline failed.', 'error');
+    }
   };
 
   const scrollToClause = (clauseId, type) => {
-    const targetRef = clauseRefs[clauseId];
+    const targetRef = clauseRefs.current[clauseId];
     if (targetRef && targetRef.current) {
       targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
       setHighlightedClause({ id: clauseId, type });
@@ -171,6 +200,15 @@ export default function PolicyViewer() {
     'Comparing enterprise policies',
     'Generating summary'
   ];
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[50vh] space-y-4">
+        <div className="w-10 h-10 rounded-full border-4 border-[#C8102E]/20 border-t-[#C8102E] animate-spin" />
+        <span className="text-xs text-[#e8bcb9] opacity-75">Loading policy reports...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-6 h-[calc(100vh-8rem)] overflow-hidden">
@@ -222,7 +260,7 @@ export default function PolicyViewer() {
                 
                 {/* Scroll Target Container */}
                 <div
-                  ref={page.clauseId ? clauseRefs[page.clauseId] : null}
+                  ref={page.clauseId ? (el => clauseRefs.current[page.clauseId] = { current: el }) : null}
                   className={`p-4 rounded-lg transition-all duration-300 ${highlightStyle}`}
                 >
                   <p className="text-sm text-[#fedad7] leading-relaxed whitespace-pre-line">

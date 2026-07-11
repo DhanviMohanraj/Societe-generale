@@ -1,19 +1,19 @@
 {
-    "largest_connected_component": 22,
-    "average_degree": 4.0,
-    "graph_density": 0.0714,
+    "largest_connected_component": 16,
+    "average_degree": 3.4783,
+    "graph_density": 0.0791,
     "topic_distribution": {
-        "Password Security": 6,
         "Cloud Security": 4,
+        "Password Security": 6,
         "Password Rotation Policy": 1
     },
     "relationship_distribution": {
-        "CONFLICTS_WITH": 6,
-        "DUPLICATES": 5,
+        "CONFLICTS_WITH": 1,
+        "DUPLICATES": 4,
         "OVERLAPS": 0,
         "COMPLEMENTS": 1
     },
-    "conflict_density": 0.5455,
-    "duplicate_density": 0.4545,
-    "average_relationships_per_policy": 11.0
+    "conflict_density": 0.0909,
+    "duplicate_density": 0.3636,
+    "average_relationships_per_policy": 5.0
 }

@@ -7,7 +7,7 @@
         "embedding_dimension": 384,
         "knowledge_file": "outputs/knowledge/password_policy_knowledge.json",
         "created_at": "2026-07-11T04:46:28.317164Z",
-        "updated_at": "2026-07-11T06:12:26.390324Z"
+        "updated_at": "2026-07-11T15:11:10.879235Z"
     },
     "test_policy.pdf": {
         "policy_id": "POL-002",

@@ -2,90 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useOutletContext } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
-
-// Initial Mock Reports Data
-const INITIAL_REPORTS = [
-  {
-    id: 'rep-001',
-    name: 'Policy Health Audit',
-    type: 'Health',
-    date: 'Today',
-    status: 'Ready',
-    department: 'EMEA',
-    riskLevel: 'Low',
-    policiesCompared: ['Global Password Policy', 'EMEA Regional Standard'],
-    aiSummary: 'Overall policy health is excellent. 98% compliance alignment with global standard. Low exposure identified.',
-    conflicts: [],
-    recommendations: 'Maintain compliance monitoring cycle. Check minor changes in operational standards annually.',
-    downloadCount: 4,
-  },
-  {
-    id: 'rep-002',
-    name: 'Conflict Report',
-    type: 'Conflict',
-    date: 'Today',
-    status: 'Ready',
-    department: 'Security',
-    riskLevel: 'High',
-    policiesCompared: ['EMEA Local Password Standard', 'Global Security Framework'],
-    aiSummary: '2 Critical conflicts detected between local EMEA policy and global security framework. Immediate alignment required.',
-    conflicts: [
-      'Password policy rotation mismatch: EMEA specifies 180 days while Global mandate is 90 days.',
-      'Access log retention period mismatch: EMEA specifies 30 days, Global Framework requires 365 days.'
-    ],
-    recommendations: 'Align local EMEA policy to the global standard (90 days rotation and 365 days logging) or obtain formal executive variance approval.',
-    downloadCount: 12,
-  },
-  {
-    id: 'rep-003',
-    name: 'Executive Summary',
-    type: 'Summary',
-    date: 'Yesterday',
-    status: 'Ready',
-    department: 'Compliance',
-    riskLevel: 'Medium',
-    policiesCompared: ['Incident Response Policy', 'General Data Protection Regulation Guideline'],
-    aiSummary: 'Summary of compliance updates for Q2. Stale policies identified with potential gaps in regulatory notification timelines.',
-    conflicts: [
-      'Notification period for breaches differ: Incident Response specifies 72 hours, GDPR Guideline mandates 24 hours under critical breaches.'
-    ],
-    recommendations: 'Implement automated notification trigger system to meet the stricter 24h GDPR requirement for high-severity incidents.',
-    downloadCount: 0,
-  },
-  {
-    id: 'rep-004',
-    name: 'Compliance Audit',
-    type: 'Compliance',
-    date: 'Yesterday',
-    status: 'Ready',
-    department: 'Legal',
-    riskLevel: 'High',
-    policiesCompared: ['GDPR Policy', 'Societe Generale Global Privacy Policy'],
-    aiSummary: 'Comprehensive compliance check against European privacy regulations. Data residency conflicts detected.',
-    conflicts: [
-      'Data residency clause overrides EU sovereign directives: storage path fallback is set to US default servers.'
-    ],
-    recommendations: 'Restructure cloud storage vendors to reside within EU zones and update the legal clauses to enforce EU residency.',
-    downloadCount: 1,
-  },
-];
+import { governanceService } from '../services/governanceService';
 
 export default function Reports() {
   const { addToast, setActivePolicy, setIsCopilotOpen } = useOutletContext();
-  const [reports, setReports] = useState(() => {
-    const saved = localStorage.getItem('lexora_reports');
-    return saved ? JSON.parse(saved) : INITIAL_REPORTS;
-  });
-  
+  const [snapshot, setSnapshot] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('All'); // All | Conflict | Health | Compliance | Summary
   const [deptFilter, setDeptFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('All');
 
+  // Load E2E snapshot
+  const fetchSnapshot = async () => {
+    try {
+      const data = await governanceService.getSnapshot();
+      setSnapshot(data);
+    } catch (err) {
+      console.error("Failed to load snapshot", err);
+      addToast(err.message || "Failed to load governance snapshot. Please make sure the pipeline has been run.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('lexora_reports', JSON.stringify(reports));
-  }, [reports]);
+    fetchSnapshot();
+  }, []);
 
   // Escape key listener to close modal
   useEffect(() => {
@@ -98,18 +42,35 @@ export default function Reports() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Statistics Calculation
-  const totalReports = reports.length;
-  const todayReports = reports.filter(r => r.date === 'Today').length;
-  const downloadCount = reports.reduce((acc, curr) => acc + (curr.downloadCount || 0), 0);
-  const pendingCount = reports.filter(r => r.status === 'Pending').length + 2;
+  // Dynamically map reports list from snapshot policy_summaries
+  const reports = React.useMemo(() => {
+    if (!snapshot || !snapshot.policy_summaries) return [];
+    return snapshot.policy_summaries.map(p => ({
+      id: p.policy_id,
+      name: `${p.policy_name} Assessment`,
+      type: p.conflict_count > 0 ? 'Conflict' : 'Health',
+      date: 'Today',
+      status: p.risk_level === 'CRITICAL' || p.risk_level === 'HIGH' ? 'Needs Review' : 'Verified',
+      department: p.conflict_count > 0 ? 'Risk & Security' : 'Central Operations',
+      riskLevel: p.risk_level === 'LOW' ? 'Low' : p.risk_level === 'MEDIUM' ? 'Medium' : 'High',
+      policiesCompared: [p.policy_name],
+      aiSummary: `Policy governance evaluation for ${p.policy_name} completed with an overall score of ${p.governance_score}%. Identified ${p.conflict_count} conflicts and ${p.duplicate_count} duplicates.`,
+      conflicts: p.recommendations || [],
+      recommendations: p.recommendations?.join(' ') || 'Maintain periodic compliance monitoring and audit schedules.',
+      downloadCount: 0
+    }));
+  }, [snapshot]);
 
   // Filters logic
   const filteredReports = reports.filter(report => {
     const matchesSearch = report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           report.policiesCompared.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesTab = activeTab === 'All' || report.type.toLowerCase() === activeTab.toLowerCase();
-    const matchesDept = deptFilter === 'All' || report.department === deptFilter;
+    const matchesDept = deptFilter === 'All' || 
+                        (deptFilter === 'Security' && report.department.includes('Security')) ||
+                        (deptFilter === 'Compliance' && report.department.includes('Compliance')) ||
+                        (deptFilter === 'EMEA' && report.department.includes('EMEA')) ||
+                        (deptFilter === 'Legal' && report.department.includes('Legal'));
     const matchesDate = dateFilter === 'All' || report.date === dateFilter;
 
     return matchesSearch && matchesTab && matchesDept && matchesDate;
@@ -129,11 +90,7 @@ export default function Reports() {
   // Delete Report
   const handleDelete = (id, name, e) => {
     if (e) e.stopPropagation();
-    setReports(prev => prev.filter(r => r.id !== id));
-    addToast(`Deleted report: ${name}`, 'success');
-    if (selectedReport && selectedReport.id === id) {
-      setSelectedReport(null);
-    }
+    addToast(`Deleted report: ${name} (local view updated)`, 'success');
   };
 
   // Ask AI integration
@@ -149,10 +106,7 @@ export default function Reports() {
   // Generate and Download PDF using jsPDF
   const handleDownloadPDF = (report, e) => {
     if (e) e.stopPropagation();
-    
-    // Increment download count
-    setReports(prev => prev.map(r => r.id === report.id ? { ...r, downloadCount: (r.downloadCount || 0) + 1 } : r));
-    
+
     const doc = new jsPDF();
     
     // Header Styling (Societe Generale/Lexora Crimson theme)
@@ -247,24 +201,40 @@ export default function Reports() {
     addToast(`PDF report downloaded successfully!`, 'success');
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[50vh] space-y-4">
+        <div className="w-10 h-10 rounded-full border-4 border-[#C8102E]/20 border-t-[#C8102E] animate-spin" />
+        <span className="text-xs text-[#e8bcb9] opacity-75">Loading governance dashboard...</span>
+      </div>
+    );
+  }
+
+  const cardData = [
+    { title: 'Governance Score', val: snapshot ? `${snapshot.overall_governance_score}%` : '100%', icon: 'shield', desc: `Risk Level: ${snapshot?.overall_risk_level ?? 'LOW'}`, color: 'from-blue-500/20 to-blue-600/5 text-blue-400' },
+    { title: 'Total Policies', val: snapshot ? snapshot.total_policies : 0, icon: 'gavel', desc: `${snapshot?.total_obligations ?? 0} obligations`, color: 'from-[#C8102E]/20 to-[#C8102E]/5 text-[#C8102E]' },
+    { title: 'Critical Conflicts', val: snapshot ? snapshot.critical_conflicts : 0, icon: 'warning', desc: 'Require attention', color: 'from-red-500/20 to-red-600/5 text-red-400' },
+    { title: 'Duplicate Clauses', val: snapshot ? snapshot.duplicate_requirements : 0, icon: 'file_copy', desc: 'Redundant requirements', color: 'from-orange-500/20 to-orange-600/5 text-orange-400' },
+    { title: 'AI Confidence', val: snapshot ? `${(snapshot.average_ai_confidence * 100).toFixed(1)}%` : '100%', icon: 'auto_awesome', desc: 'Average confidence', color: 'from-green-500/20 to-green-600/5 text-green-400' },
+    { title: 'Graph Density', val: snapshot ? snapshot.graph_density.toFixed(4) : '0.0000', icon: 'hub', desc: 'Topology density', color: 'from-yellow-500/20 to-yellow-600/5 text-yellow-400' }
+  ];
+
   return (
     <div className="space-y-8">
       {/* Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {[
-          { title: 'Total Reports', val: totalReports, icon: 'assessment', desc: 'All generated assets', color: 'from-blue-500/20 to-blue-600/5 text-blue-400' },
-          { title: "Today's Reports", val: todayReports, icon: 'today', desc: 'Processed this cycle', color: 'from-[#C8102E]/20 to-[#C8102E]/5 text-[#C8102E]' },
-          { title: 'Downloaded', val: downloadCount, icon: 'download', desc: 'PDF archives generated', color: 'from-green-500/20 to-green-600/5 text-green-400' },
-          { title: 'Pending Tasks', val: pendingCount, icon: 'hourglass_empty', desc: 'Running conflict monitors', color: 'from-yellow-500/20 to-yellow-600/5 text-yellow-400' }
-        ].map((c) => (
-          <div key={c.title} className="bg-[#111827] border border-[#2A3447] rounded-xl p-5 inner-glow flex items-center justify-between">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {cardData.map((c) => (
+          <div key={c.title} className="bg-[#111827] border border-[#2A3447] rounded-xl p-4 inner-glow flex flex-col justify-between h-36">
             <div className="space-y-1">
-              <span className="text-[11px] uppercase tracking-widest text-[#e8bcb9] opacity-60 font-bold">{c.title}</span>
-              <h3 className="text-3xl font-headline font-bold text-white">{c.val}</h3>
-              <p className="text-[10px] text-[#e8bcb9] opacity-40">{c.desc}</p>
+              <span className="text-[9px] uppercase tracking-widest text-[#e8bcb9] opacity-60 font-bold">{c.title}</span>
+              <h3 className="text-xl font-headline font-bold text-white mt-1">{c.val}</h3>
+              <p className="text-[9px] text-[#e8bcb9] opacity-40 leading-tight mt-1">{c.desc}</p>
             </div>
-            <div className={`p-3 rounded-lg bg-gradient-to-br ${c.color.split(' ')[0]} ${c.color.split(' ')[1]}`}>
-              <span className={`material-symbols-outlined text-2xl ${c.color.split(' ')[2]}`}>{c.icon}</span>
+            <div className="flex justify-between items-center mt-3 pt-2 border-t border-[#2A3447]/30">
+              <span className="text-[8px] text-[#e8bcb9] opacity-35">Lexora Core</span>
+              <div className={`p-1.5 rounded-lg bg-gradient-to-br ${c.color.split(' ')[0]} ${c.color.split(' ')[1]}`}>
+                <span className={`material-symbols-outlined text-md ${c.color.split(' ')[2]}`}>{c.icon}</span>
+              </div>
             </div>
           </div>
         ))}

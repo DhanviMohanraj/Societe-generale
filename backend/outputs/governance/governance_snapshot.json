@@ -1,14 +1,14 @@
 {
-    "generated_at": "2026-07-11T12:27:11.084534Z",
-    "overall_governance_score": 57,
-    "overall_risk_level": "CRITICAL",
+    "generated_at": "2026-07-11T15:17:44.909643Z",
+    "overall_governance_score": 92,
+    "overall_risk_level": "LOW",
     "total_policies": 3,
     "total_obligations": 11,
-    "critical_conflicts": 6,
-    "duplicate_requirements": 5,
-    "graph_density": 0.0714,
-    "average_ai_confidence": 0.9717,
-    "high_risk_policies": 2,
+    "critical_conflicts": 1,
+    "duplicate_requirements": 4,
+    "graph_density": 0.0791,
+    "average_ai_confidence": 0.9917,
+    "high_risk_policies": 1,
     "top_recommendations": [
         "Immediately review conflicting security policies.",
         "Merge duplicate obligations into one canonical policy.",
@@ -28,39 +28,42 @@
             "recommendation_priority": "LOW",
             "recommendations": [
                 "Expand policy coverage."
-            ]
+            ],
+            "obligation_count": 4
         },
         {
             "policy_id": "POL-001",
             "policy_name": "password_policy.pdf",
-            "governance_score": 2,
-            "risk_level": "CRITICAL",
-            "conflict_count": 6,
-            "duplicate_count": 5,
+            "governance_score": 79,
+            "risk_level": "HIGH",
+            "conflict_count": 1,
+            "duplicate_count": 4,
             "overlap_count": 0,
-            "critical_conflicts": 6,
-            "average_ai_confidence": 0.9736,
+            "critical_conflicts": 1,
+            "average_ai_confidence": 1.0,
             "recommendation_priority": "CRITICAL",
             "recommendations": [
                 "Immediately review conflicting security policies.",
                 "Merge duplicate obligations into one canonical policy.",
                 "Expand policy coverage."
-            ]
+            ],
+            "obligation_count": 6
         },
         {
             "policy_id": "POL-002",
             "policy_name": "test_policy.pdf",
-            "governance_score": 68,
-            "risk_level": "HIGH",
-            "conflict_count": 2,
+            "governance_score": 98,
+            "risk_level": "LOW",
+            "conflict_count": 0,
             "duplicate_count": 2,
             "overlap_count": 0,
-            "critical_conflicts": 2,
-            "average_ai_confidence": 0.9825,
-            "recommendation_priority": "CRITICAL",
+            "critical_conflicts": 0,
+            "average_ai_confidence": 1.0,
+            "recommendation_priority": "LOW",
             "recommendations": [
-                "Immediately review conflicting security policies."
-            ]
+                "Maintain current policy compliance levels. Run periodic reviews."
+            ],
+            "obligation_count": 1
         }
     ]
 }

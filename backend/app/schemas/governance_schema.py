@@ -51,6 +51,7 @@ class PolicySummary(BaseModel):
     average_ai_confidence: float = Field(..., description="Average AI confidence for relationships.")
     recommendation_priority: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"] = Field(..., description="Recommendation urgency level.")
     recommendations: List[str] = Field(default_factory=list, description="Actionable governance recommendations.")
+    obligation_count: int = Field(default=0, description="Total obligations in this policy.")
 
     @field_validator("governance_score")
     @classmethod
