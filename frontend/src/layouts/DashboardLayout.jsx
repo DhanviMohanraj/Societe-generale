@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import CopilotDrawer from '../components/CopilotDrawer';
 
 export default function DashboardLayout({ pageTitle }) {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const token = localStorage.getItem('lexora_jwt_token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [activePolicy, setActivePolicy] = useState(null);
   const [toasts, setToasts] = useState([]);

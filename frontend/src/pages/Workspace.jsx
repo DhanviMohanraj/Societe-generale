@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import UploadZone from '../components/UploadZone';
 import StatusBadge from '../components/StatusBadge';
 
+const PIPELINE_STAGES = [
+  { name: 'Reading Policies', msg: 'Reading uploaded documents...' },
+  { name: 'Extracting Obligations', msg: 'Extracting obligations...' },
+  { name: 'Normalizing Policies', msg: 'Standardizing policy language...' },
+  { name: 'Building Knowledge Graph', msg: 'Building semantic knowledge...' },
+  { name: 'Detecting Policy Conflicts', msg: 'Detecting contradictions...' },
+  { name: 'Generating AI Health Report', msg: 'Generating executive report...' }
+];
+
 export default function Workspace() {
   const navigate = useNavigate();
+  const { addToast } = useOutletContext();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
 
@@ -17,9 +27,17 @@ export default function Workspace() {
     { name: 'Remote_Work_Access_Guide.pdf', status: 'Conflict Detected', time: '14 hours ago' },
   ]);
 
-  // Uploading and processing states
+  // Uploading progress tracking
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [activeProcessing, setActiveProcessing] = useState(null); // { name: string, step: number }
+
+  // Processing state: currentStep ranges from -1 (idle) to 5 (active steps), and 6 (completed)
+  const [pipeline, setPipeline] = useState({
+    active: false,
+    currentStep: -1,
+    fileName: null,
+    failedStep: -1
+  });
+
   const [aiInsight, setAiInsight] = useState({
     title: 'AI Insight',
     text: 'Two uploaded policies contain conflicting password rotation rules (90 vs 180 days).',
@@ -36,7 +54,7 @@ export default function Workspace() {
   const handleFilesUploaded = (files) => {
     const filesList = Array.from(files);
     
-    // 1. Add to uploading files list to show progress animation
+    // Add to uploading files list to show progress animation
     const newUploading = filesList.map(f => ({ name: f.name, progress: 0 }));
     setUploadingFiles(prev => [...prev, ...newUploading]);
 
@@ -58,77 +76,109 @@ export default function Workspace() {
           setUploadingFiles(prev => prev.filter(item => item.name !== file.name));
           startAIProcessing(file.name);
         }
-      }, 200 + index * 100); // slightly staggered progress
+      }, 200 + index * 100);
     });
   };
 
-  // Timed AI processing pipeline
+  // Timed AI processing pipeline simulation
   const startAIProcessing = (fileName) => {
-    setActiveProcessing({ name: fileName, step: 0 }); // Step 0: Reading Policies
+    setPipeline({
+      active: true,
+      currentStep: 0,
+      fileName: fileName,
+      failedStep: -1
+    });
 
-    // Steps timing:
-    // Step 0 (Reading Policies) -> Step 1 (Extracting Obligations) after 1.5s
-    // Step 1 -> Step 2 (Comparing Policies) after 1.5s
-    // Step 2 -> Step 3 (Generating Health Report) after 1.5s
-    // Step 3 -> Completed after 1.5s
+    const stepDuration = 1400;
 
-    const stepDuration = 1500;
-    
-    setTimeout(() => {
-      setActiveProcessing(prev => prev ? { ...prev, step: 1 } : null);
-      
-      setTimeout(() => {
-        setActiveProcessing(prev => prev ? { ...prev, step: 2 } : null);
-        
+    // Transition between the 6 pipeline stages
+    const triggerNextStep = (step) => {
+      if (step < 6) {
         setTimeout(() => {
-          setActiveProcessing(prev => prev ? { ...prev, step: 3 } : null);
-          
-          setTimeout(() => {
-            // Complete processing
-            setActiveProcessing(null);
-            
-            // Determine dynamic status based on file name
-            let status = 'Verified';
-            if (fileName.toLowerCase().includes('draft') || fileName.toLowerCase().includes('review')) {
-              status = 'Pending Review';
-            } else if (fileName.toLowerCase().includes('conflict') || fileName.toLowerCase().includes('restricted')) {
-              status = 'Conflict Detected';
-            }
-
-            // Automatically add to Recent Uploads
-            setUploads(prev => [
-              { name: fileName, status, time: 'Just now' },
-              ...prev
-            ]);
-
-            // Update AI Insight dynamically based on file type
-            if (fileName.toLowerCase().includes('gdpr') || fileName.toLowerCase().includes('privacy')) {
-              setAiInsight({
-                title: 'AI Insight (GDPR Focus)',
-                text: `Privacy clause conflict detected in: ${fileName}. The data storage duration overrides the standard global 7-year mandate.`,
-                linkText: 'Analyze Privacy Mismatches',
-                hasConflict: true
-              });
-            } else if (status === 'Conflict Detected') {
-              setAiInsight({
-                title: 'AI Insight (Conflict Alert)',
-                text: `Security clearance levels mismatch found in newly uploaded policy: ${fileName}.`,
-                linkText: 'Inspect Mismatches',
-                hasConflict: true
-              });
-            } else {
-              setAiInsight({
-                title: 'AI Insight',
-                text: `Successfully cross-referenced ${fileName} against 14 active policies. No new conflicts identified.`,
-                linkText: 'View Library Status',
-                hasConflict: false
-              });
-            }
-
-          }, stepDuration);
+          setPipeline(prev => {
+            if (!prev.active) return prev;
+            return {
+              ...prev,
+              currentStep: step
+            };
+          });
+          triggerNextStep(step + 1);
         }, stepDuration);
-      }, stepDuration);
-    }, stepDuration);
+      } else {
+        // Pipeline Completion
+        setTimeout(() => {
+          setPipeline(prev => {
+            if (!prev.active) return prev;
+            return {
+              ...prev,
+              currentStep: 6,
+              active: false
+            };
+          });
+
+          // Show success toast
+          addToast("Analysis completed successfully", "success");
+
+          // Determine status dynamically
+          let status = 'Verified';
+          if (fileName.toLowerCase().includes('draft') || fileName.toLowerCase().includes('review')) {
+            status = 'Pending Review';
+          } else if (fileName.toLowerCase().includes('conflict') || fileName.toLowerCase().includes('restricted')) {
+            status = 'Conflict Detected';
+          }
+
+          // Append to recent uploads
+          setUploads(prev => [
+            { name: fileName, status, time: 'Just now' },
+            ...prev
+          ]);
+
+          // Set Dynamic AI Insights
+          if (fileName.toLowerCase().includes('gdpr') || fileName.toLowerCase().includes('privacy')) {
+            setAiInsight({
+              title: 'AI Insight (GDPR Focus)',
+              text: `Privacy clause conflict detected in: ${fileName}. The data storage duration overrides the standard global 7-year mandate.`,
+              linkText: 'Analyze Privacy Mismatches',
+              hasConflict: true
+            });
+          } else if (status === 'Conflict Detected') {
+            setAiInsight({
+              title: 'AI Insight (Conflict Alert)',
+              text: `Security clearance levels mismatch found in newly uploaded policy: ${fileName}.`,
+              linkText: 'Inspect Mismatches',
+              hasConflict: true
+            });
+          } else {
+            setAiInsight({
+              title: 'AI Insight',
+              text: `Successfully cross-referenced ${fileName} against 14 active policies. No new conflicts identified.`,
+              linkText: 'View Library Status',
+              hasConflict: false
+            });
+          }
+
+        }, stepDuration);
+      }
+    };
+
+    triggerNextStep(1);
+  };
+
+  // Get current active pipeline messaging
+  const getPipelineMessage = () => {
+    if (pipeline.currentStep === 6) return 'Exporting PDF... Analysis complete!';
+    if (pipeline.currentStep >= 0 && pipeline.currentStep < 6) {
+      return PIPELINE_STAGES[pipeline.currentStep].msg;
+    }
+    return 'System idle. Upload a document to start analysis.';
+  };
+
+  // Calculate dynamic progress percentage
+  const getProgressPercent = () => {
+    if (pipeline.currentStep === 6) return 100;
+    if (pipeline.currentStep === -1) return 0;
+    // Maps steps 0-5 incrementally up to ~90%, and 6 completes to 100%
+    return Math.round(((pipeline.currentStep + 1) / 6) * 100);
   };
 
   return (
@@ -138,7 +188,7 @@ export default function Workspace() {
         <UploadZone onFilesUploaded={handleFilesUploaded} />
       </section>
 
-      {/* Uploading Progress Overlay (shown directly below Upload Zone) */}
+      {/* Uploading Progress Overlay */}
       <AnimatePresence>
         {uploadingFiles.length > 0 && (
           <motion.div
@@ -193,7 +243,7 @@ export default function Workspace() {
               <tbody className="divide-y divide-[#2A3447]/30">
                 {/* Skeletons when actively processing a new file */}
                 <AnimatePresence>
-                  {activeProcessing && (
+                  {pipeline.active && pipeline.currentStep < 6 && (
                     <motion.tr
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -204,7 +254,7 @@ export default function Workspace() {
                         <div className="flex items-center gap-3">
                           <span className="material-symbols-outlined text-[#C8102E] animate-pulse">description</span>
                           <span className="text-sm font-medium text-[#ffb3ae] animate-pulse">
-                            Processing {activeProcessing.name}...
+                            Processing {pipeline.fileName}...
                           </span>
                         </div>
                       </td>
@@ -224,7 +274,7 @@ export default function Workspace() {
                 </AnimatePresence>
 
                 {filteredUploads.length > 0 ? (
-                  filteredUploads.map((upload, idx) => (
+                  filteredUploads.map((upload) => (
                     <motion.tr
                       layoutId={upload.name}
                       key={upload.name}
@@ -297,126 +347,99 @@ export default function Workspace() {
           </motion.div>
 
           {/* Processing Status Section */}
-          <div className="bg-[#111827] rounded-xl border border-[#2A3447] p-6 inner-glow">
-            <h3 className="text-[10px] uppercase tracking-widest text-[#e8bcb9] opacity-60 mb-6 font-bold">
-              Current Processing Status
-            </h3>
+          <div className="bg-[#111827] rounded-xl border border-[#2A3447] p-6 inner-glow space-y-6">
+            <div className="flex items-center justify-between border-b border-[#2A3447]/30 pb-3">
+              <h3 className="text-[10px] uppercase tracking-widest text-[#e8bcb9] opacity-60 font-bold">
+                Current Processing Status
+              </h3>
+              {pipeline.active && (
+                <span className="text-[9px] uppercase tracking-widest text-[#C8102E] font-bold animate-pulse">
+                  Processing...
+                </span>
+              )}
+            </div>
             
+            {/* 6 Stage Timeline */}
             <div className="space-y-4">
-              {/* Step 1: Reading Policies */}
-              <div className="flex items-start gap-3">
-                <div className="flex flex-col items-center">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                    activeProcessing ? (
-                      activeProcessing.step > 0 ? 'bg-[#C8102E]/20 text-[#C8102E]' : 'border-2 border-[#C8102E] border-t-transparent animate-spin'
-                    ) : 'bg-[#C8102E]/20 text-[#C8102E]'
-                  }`}>
-                    {(!activeProcessing || activeProcessing.step > 0) ? (
-                      <span className="material-symbols-outlined text-xs font-bold">check</span>
-                    ) : null}
-                  </div>
-                  <div className={`w-[1px] h-6 ${
-                    (!activeProcessing || activeProcessing.step > 0) ? 'bg-[#C8102E]/30' : 'bg-[#2A3447]'
-                  }`} />
-                </div>
-                <span className={`text-xs mt-0.5 ${
-                  activeProcessing && activeProcessing.step === 0 ? 'text-[#C8102E] font-bold animate-pulse' : 'text-white font-medium'
-                }`}>
-                  Reading Policies
-                </span>
-              </div>
-              
-              {/* Step 2: Extracting Obligations */}
-              <div className="flex items-start gap-3">
-                <div className="flex flex-col items-center">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                    activeProcessing ? (
-                      activeProcessing.step === 1 ? 'border-2 border-[#C8102E] border-t-transparent animate-spin' :
-                      activeProcessing.step > 1 ? 'bg-[#C8102E]/20 text-[#C8102E]' : 'border border-[#2A3447]'
-                    ) : 'bg-[#C8102E]/20 text-[#C8102E]'
-                  }`}>
-                    {(!activeProcessing || activeProcessing.step > 1) ? (
-                      <span className="material-symbols-outlined text-xs font-bold">check</span>
-                    ) : null}
-                  </div>
-                  <div className={`w-[1px] h-6 ${
-                    (!activeProcessing || activeProcessing.step > 1) ? 'bg-[#C8102E]/30' : 'bg-[#2A3447]'
-                  }`} />
-                </div>
-                <span className={`text-xs mt-0.5 ${
-                  activeProcessing ? (
-                    activeProcessing.step === 1 ? 'text-[#C8102E] font-bold animate-pulse' :
-                    activeProcessing.step > 1 ? 'text-white font-medium' : 'text-[#e8bcb9] opacity-50'
-                  ) : 'text-white font-medium'
-                }`}>
-                  Extracting Obligations
-                </span>
-              </div>
+              {PIPELINE_STAGES.map((stage, idx) => {
+                // Determine stage state
+                let state = 'waiting'; // waiting | running | completed | failed
+                
+                if (pipeline.currentStep === 6) {
+                  state = 'completed';
+                } else if (pipeline.currentStep > idx) {
+                  state = 'completed';
+                } else if (pipeline.currentStep === idx) {
+                  state = (pipeline.failedStep === idx) ? 'failed' : 'running';
+                }
 
-              {/* Step 3: Comparing Policies */}
-              <div className="flex items-start gap-3">
-                <div className="flex flex-col items-center">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                    activeProcessing ? (
-                      activeProcessing.step === 2 ? 'border-2 border-[#C8102E] border-t-transparent animate-spin' :
-                      activeProcessing.step > 2 ? 'bg-[#C8102E]/20 text-[#C8102E]' : 'border border-[#2A3447]'
-                    ) : 'bg-[#C8102E]/20 text-[#C8102E]'
-                  }`}>
-                    {(!activeProcessing || activeProcessing.step > 2) ? (
-                      <span className="material-symbols-outlined text-xs font-bold">check</span>
-                    ) : null}
-                  </div>
-                  <div className={`w-[1px] h-6 ${
-                    (!activeProcessing || activeProcessing.step > 2) ? 'bg-[#C8102E]/30' : 'bg-[#2A3447]'
-                  }`} />
-                </div>
-                <span className={`text-xs mt-0.5 ${
-                  activeProcessing ? (
-                    activeProcessing.step === 2 ? 'text-[#C8102E] font-bold animate-pulse' :
-                    activeProcessing.step > 2 ? 'text-white font-medium' : 'text-[#e8bcb9] opacity-50'
-                  ) : 'text-white font-medium'
-                }`}>
-                  Comparing Policies
-                </span>
-              </div>
+                // Render styles based on state
+                let iconEl = null;
+                let circleClass = 'border border-[#2A3447] text-[#e8bcb9]/20';
+                let textClass = 'text-[#e8bcb9] opacity-50';
 
-              {/* Step 4: Generating Health Report */}
-              <div className="flex items-start gap-3">
-                <div className="flex flex-col items-center">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                    activeProcessing ? (
-                      activeProcessing.step === 3 ? 'border-2 border-[#C8102E] border-t-transparent animate-spin' :
-                      'border border-[#2A3447]'
-                    ) : 'bg-[#C8102E]/20 text-[#C8102E]'
-                  }`}>
-                    {!activeProcessing ? (
-                      <span className="material-symbols-outlined text-xs font-bold">check</span>
-                    ) : null}
+                if (state === 'completed') {
+                  circleClass = 'bg-green-500/20 text-green-400 border border-green-500/30';
+                  iconEl = <span className="material-symbols-outlined text-xs font-bold">check</span>;
+                  textClass = 'text-white font-medium';
+                } else if (state === 'running') {
+                  circleClass = 'border-2 border-[#C8102E] border-t-transparent animate-spin';
+                  textClass = 'text-[#C8102E] font-bold animate-pulse';
+                } else if (state === 'failed') {
+                  circleClass = 'bg-red-500/20 text-red-400 border border-red-500/30';
+                  iconEl = <span className="material-symbols-outlined text-xs font-bold">close</span>;
+                  textClass = 'text-red-400 font-bold';
+                }
+
+                return (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="flex flex-col items-center">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center ${circleClass}`}>
+                        {iconEl}
+                      </div>
+                      {idx < PIPELINE_STAGES.length - 1 && (
+                        <div className={`w-[1px] h-6 ${
+                          state === 'completed' ? 'bg-green-500/30' : 'bg-[#2A3447]'
+                        }`} />
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className={`text-xs mt-0.5 transition-colors duration-300 ${textClass}`}>
+                        {stage.name}
+                      </span>
+                      {state === 'running' && (
+                        <span className="text-[10px] text-[#e8bcb9] opacity-60 mt-0.5 italic">
+                          {stage.msg}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <span className={`text-xs mt-0.5 ${
-                  activeProcessing ? (
-                    activeProcessing.step === 3 ? 'text-[#C8102E] font-bold animate-pulse' : 'text-[#e8bcb9] opacity-50'
-                  ) : 'text-white font-medium'
-                }`}>
-                  Generating Health Report
-                </span>
-              </div>
+                );
+              })}
             </div>
 
+            {/* Dynamic AI Message Indicator */}
+            {pipeline.currentStep !== -1 && (
+              <div className="bg-[#0A1220]/50 p-3 rounded-lg border border-[#2A3447]/40 text-center">
+                <span className="text-[11px] font-semibold text-[#fedad7]">
+                  {getPipelineMessage()}
+                </span>
+              </div>
+            )}
+
             {/* Global Progress Bar */}
-            <div className="mt-8 pt-6 border-t border-[#2A3447]/30">
+            <div className="pt-4 border-t border-[#2A3447]/30">
               <div className="flex justify-between items-center mb-1">
                 <span className="font-code text-[10px] text-[#e8bcb9] opacity-60">Global Progress</span>
                 <span className="font-code text-[10px] text-[#C8102E] font-bold">
-                  {activeProcessing ? `${Math.round((activeProcessing.step + 1) * 25)}%` : '100%'}
+                  {getProgressPercent()}%
                 </span>
               </div>
-              <div className="h-1 w-full bg-[#172033] rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-[#172033] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#C8102E] transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-[#C8102E] to-[#B11226] transition-all duration-500 ease-out"
                   style={{
-                    width: activeProcessing ? `${(activeProcessing.step + 1) * 25}%` : '100%'
+                    width: `${getProgressPercent()}%`
                   }}
                 />
               </div>

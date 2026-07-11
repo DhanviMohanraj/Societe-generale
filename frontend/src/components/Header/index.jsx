@@ -71,7 +71,7 @@ export default function Header({ title, onUploadClick, onCopilotClick }) {
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#2A3447] hover:border-[#C8102E] hover:text-white text-[#fedad7] transition-all text-xs font-semibold"
         >
           <span className="material-symbols-outlined text-sm">smart_toy</span>
-          <span>🤖 AI Copilot</span>
+          <span>AI Copilot</span>
         </button>
 
         {/* Notifications */}
@@ -124,13 +124,10 @@ export default function Header({ title, onUploadClick, onCopilotClick }) {
               setIsProfileOpen(!isProfileOpen);
               setIsNotifOpen(false);
             }}
-            className="w-8 h-8 rounded-full overflow-hidden bg-[#172033] border border-[#2A3447] cursor-pointer hover:scale-105 transition-transform"
+            className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C8102E] to-[#B11226] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform text-white font-bold text-[10px] shadow-md border border-[#2A3447] select-none"
+            title="Profile Menu"
           >
-            <img
-              className="w-full h-full object-cover"
-              alt="Profile Avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFMEr8wJifMmIYw_lvUx4OvVIO9ZZP1nUxlnuNQ1zkTmytOAOqsn7hWnchTaecyg2zmd51b70MqNioaxguJSiLdkskAwX63k8GKPJfgjHA8FhkcZrS9cr7E5Nt1u7ICdHlC8ZY1qJ8cZx07hNdIkfVUpQ5Jh7I-DfAyFRgX82EmVOH7OVCVlMdmaErmaCHHHY5ZfyediR_jn6ppvNUxVDMq6sTVIH-Wjfa4Bh-F15gRx6kEWalK-M"
-            />
+            LA
           </div>
 
           <AnimatePresence>
@@ -139,11 +136,12 @@ export default function Header({ title, onUploadClick, onCopilotClick }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute right-0 mt-3 w-48 glass-panel rounded-xl shadow-2xl overflow-hidden border border-[#2A3447] z-50 text-xs"
+                className="absolute right-0 mt-3 w-52 glass-panel rounded-xl shadow-2xl overflow-hidden border border-[#2A3447] z-50 text-xs"
               >
                 <div className="px-4 py-3 border-b border-[#2A3447] bg-[#111827] text-white">
-                  <p className="font-bold">Legal Executive</p>
-                  <p className="text-[10px] text-[#e8bcb9] opacity-60">admin@lexora.ai</p>
+                  <p className="font-bold">Enterprise Admin</p>
+                  <p className="text-[10px] text-[#e8bcb9] opacity-60">Compliance Officer</p>
+                  <p className="text-[9px] text-[#e8bcb9] opacity-40 uppercase tracking-widest mt-0.5">Lexora Enterprise</p>
                 </div>
                 <div className="p-1">
                   <button

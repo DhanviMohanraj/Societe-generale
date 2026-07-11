@@ -5,6 +5,9 @@ import Workspace from '../pages/Workspace';
 import PolicyLibrary from '../pages/PolicyLibrary';
 import PolicyViewer from '../pages/PolicyViewer';
 import ConflictAnalysis from '../pages/ConflictAnalysis';
+import Reports from '../pages/Reports';
+import Settings from '../pages/Settings';
+import Admin from '../pages/Admin';
 import DashboardLayout from '../layouts/DashboardLayout';
 
 export default function AppRoutes() {
@@ -27,6 +30,18 @@ export default function AppRoutes() {
       
       <Route element={<DashboardLayout pageTitle="Conflict Analysis" />}>
         <Route path="/conflicts" element={<ConflictAnalysis />} />
+      </Route>
+
+      <Route element={<DashboardLayout pageTitle="Reports Dashboard" />}>
+        <Route path="/reports" element={<Reports />} />
+      </Route>
+
+      <Route element={<DashboardLayout pageTitle="Workspace Settings" />}>
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+
+      <Route element={<DashboardLayout pageTitle="Admin Dashboard" />}>
+        <Route path="/admin" element={<Admin />} />
       </Route>
       
       {/* Fallback routing */}

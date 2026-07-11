@@ -1,22 +1,22 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import LexoraLogo from '../LexoraLogo';
 
 export default function Sidebar() {
   const navItems = [
     { name: 'Workspace', path: '/workspace', icon: 'dashboard' },
     { name: 'Policies', path: '/policies', icon: 'gavel' },
     { name: 'Conflicts', path: '/conflicts', icon: 'warning' },
-    { name: 'Reports', path: '#', icon: 'assessment' },
-    { name: 'Settings', path: '#', icon: 'settings' },
+    { name: 'Reports', path: '/reports', icon: 'assessment' },
+    { name: 'Admin Control', path: '/admin', icon: 'admin_panel_settings' },
+    { name: 'Settings', path: '/settings', icon: 'settings' },
   ];
 
   return (
     <aside className="h-screen w-64 fixed left-0 top-0 bg-[#111827] border-r border-[#2A3447] flex flex-col py-6 z-50">
       {/* Brand logo */}
       <div className="px-6 mb-10 flex items-center gap-2">
-        <span className="material-symbols-outlined text-[#C8102E] text-2xl material-symbols-fill">
-          shield_with_heart
-        </span>
+        <LexoraLogo className="w-8 h-8" />
         <div className="flex flex-col">
           <span className="font-headline text-xl font-bold text-[#C8102E] tracking-tight">Lexora</span>
           <span className="text-[10px] uppercase tracking-[0.2em] text-[#e8bcb9] opacity-60">Enterprise Intelligence</span>
