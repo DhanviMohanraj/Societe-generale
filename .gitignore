@@ -1,0 +1,86 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environments (NEVER commit these)
+venv/
+.venv/
+env/
+.env/
+backend/venv/
+backend/.venv/
+
+# ======================
+# Environment & Secrets
+# ======================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ======================
+# ML / AI Model Files
+# ======================
+*.dll
+*.lib
+*.pyd
+*.pt
+*.pth
+*.bin
+*.onnx
+*.pkl
+*.pickle
+models/
+checkpoints/
+
+# ======================
+# IDE & Editor
+# ======================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ======================
+# OS Files
+# ======================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ======================
+# Logs & Databases
+# ======================
+*.log
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+
+# ======================
+# Node.js (if applicable)
+# ======================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# Misc
+# ======================
+.cache/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+*.coverage
