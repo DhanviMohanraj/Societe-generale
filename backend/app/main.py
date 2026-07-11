@@ -7,6 +7,7 @@ from app.api.upload import router as upload_router
 from app.api.obligations import router as obligations_router
 from app.api.normalize import router as normalize_router
 from app.api.vectorize import router as vectorize_router
+from app.api.repository import router as repository_router
 from app.services.embedding_service import EmbeddingService
 
 # Initialize the FastAPI application
@@ -31,6 +32,7 @@ app.include_router(upload_router)
 app.include_router(obligations_router)
 app.include_router(normalize_router)
 app.include_router(vectorize_router)
+app.include_router(repository_router)
 
 # Startup event to ensure uploads directory exists and preload the model
 @app.on_event("startup")
@@ -42,3 +44,11 @@ def startup_event():
         EmbeddingService.get_model()
     except Exception as e:
         print(f"Startup Warning: Could not preload embedding model: {e}")
+        
+    # Rebuild the registry to ensure it is in sync with the files on disk
+    try:
+        from app.services.registry_service import RegistryService
+        RegistryService.rebuild_registry()
+    except Exception as e:
+        print(f"Startup Warning: Could not rebuild repository registry: {e}")
+

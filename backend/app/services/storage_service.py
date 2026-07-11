@@ -148,6 +148,14 @@ def save_knowledge_json(filename: str, data: list[dict], overwrite: bool = False
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
         
+    # Auto-register the policy in the repository registry
+    try:
+        from app.services.registry_service import RegistryService
+        RegistryService.register_policy(os.path.basename(path))
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Auto-registration failed for {path}: {str(e)}")
+        
     return os.path.relpath(path, BASE_DIR).replace("\\", "/")
 
 def load_knowledge_json(filename: str) -> list[dict]:

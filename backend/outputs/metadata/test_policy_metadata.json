@@ -1,0 +1,10 @@
+{
+    "policy_id": "POL-002",
+    "policy_name": "test_policy.pdf",
+    "obligation_count": 1,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_dimension": 384,
+    "knowledge_file": "outputs/knowledge/test_policy_knowledge.json",
+    "created_at": "2026-07-11T06:47:52.177796Z",
+    "updated_at": "2026-07-11T06:47:52.304944Z"
+}
