@@ -10,17 +10,17 @@
         "target_text": "Employees Share Passwords with anyone",
         "semantic_similarity": 0.9100350737571716,
         "relationship": "CONFLICT",
-        "confidence": 1.0,
+        "confidence": 0.95,
         "severity": "CRITICAL",
-        "reason": "Both obligations are directly contradictory and pertain to the sensitive issue of password sharing, which is a significant security risk.",
-        "recommendation": "Align both requirements by establishing a clear policy that prohibits password sharing among employees and across any entities.",
+        "reason": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk. Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access.",
+        "recommendation": "Revoke both obligations as they are conflicting and pose significant security risks. Implement a strong password policy that discourages sharing passwords and mandates the use of secure authentication methods.",
         "reasoning_trace": {
             "semantic_similarity": 0.9100350737571716,
-            "llm_observation": "Comparing OBL-003 and OBL-004.",
-            "decision_basis": "Both obligations are directly contradictory and pertain to the sensitive issue of password sharing, which is a significant security risk."
+            "llm_observation": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk.",
+            "decision_basis": "Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T15:16:29.510695Z",
+        "created_at": "2026-07-11T16:20:24.612477Z",
         "status": "PENDING_ANALYSIS"
     }
 ]

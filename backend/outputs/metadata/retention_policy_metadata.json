@@ -1,0 +1,10 @@
+{
+    "policy_id": "POL-004",
+    "policy_name": "retention_policy.pdf",
+    "obligation_count": 4,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_dimension": 384,
+    "knowledge_file": "outputs/knowledge/retention_policy_knowledge.json",
+    "created_at": "2026-07-11T16:13:56.137752Z",
+    "updated_at": "2026-07-11T16:14:01.608071Z"
+}

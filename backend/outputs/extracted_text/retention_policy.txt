@@ -1,0 +1,11 @@
+DATA RETENTION POLICY
+Version: 1.2
+Last Reviewed: June 2023
+Purpose
+Defines retention requirements for enterprise data.
+Policy Statements
+1. Financial records must be retained for 7 years.
+2. Personal data must be deleted immediately upon verified user request unless legal obligations
+require retention.
+3. Backup files should be retained for one year.
+4. Archived data must be encrypted.

@@ -18,6 +18,14 @@
         "priority": "CRITICAL"
     },
     {
+        "policy_id": "POL-004",
+        "policy_name": "retention_policy.pdf",
+        "recommendations": [
+            "Expand policy coverage."
+        ],
+        "priority": "LOW"
+    },
+    {
         "policy_id": "POL-002",
         "policy_name": "test_policy.pdf",
         "recommendations": [

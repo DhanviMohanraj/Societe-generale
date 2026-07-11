@@ -1,8 +1,9 @@
 {
     "largest_connected_component": 16,
-    "average_degree": 3.4783,
-    "graph_density": 0.0791,
+    "average_degree": 3.3103,
+    "graph_density": 0.0591,
     "topic_distribution": {
+        "Data Retention": 4,
         "Cloud Security": 4,
         "Password Security": 6,
         "Password Rotation Policy": 1
@@ -13,7 +14,7 @@
         "OVERLAPS": 0,
         "COMPLEMENTS": 1
     },
-    "conflict_density": 0.0909,
-    "duplicate_density": 0.3636,
+    "conflict_density": 0.0667,
+    "duplicate_density": 0.2667,
     "average_relationships_per_policy": 5.0
 }

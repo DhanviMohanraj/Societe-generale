@@ -1,7 +1,7 @@
 {
     "repository_version": "1.0",
-    "last_updated": "2026-07-11T15:11:11.101919Z",
-    "total_policies": 3,
+    "last_updated": "2026-07-11T16:14:02.507603Z",
+    "total_policies": 4,
     "policies": [
         {
             "policy_id": "POL-003",
@@ -12,8 +12,8 @@
             "embedding_model": "BAAI/bge-small-en-v1.5",
             "embedding_dimension": 384,
             "obligation_count": 4,
-            "created_at": "2026-07-11T15:11:10.959477Z",
-            "updated_at": "2026-07-11T15:11:10.959477Z",
+            "created_at": "2026-07-11T16:14:01.899706Z",
+            "updated_at": "2026-07-11T16:14:01.899706Z",
             "status": "ACTIVE",
             "checksum": "8c0f20b0a4ffdc315450be113a740efdd787c4b37276a7ee919220a20d98cf63"
         },
@@ -26,10 +26,24 @@
             "embedding_model": "BAAI/bge-small-en-v1.5",
             "embedding_dimension": 384,
             "obligation_count": 6,
-            "created_at": "2026-07-11T15:11:11.012465Z",
-            "updated_at": "2026-07-11T15:11:11.012465Z",
+            "created_at": "2026-07-11T16:14:02.136695Z",
+            "updated_at": "2026-07-11T16:14:02.136695Z",
             "status": "ACTIVE",
             "checksum": "1e5f45f6665a20bff8298f50f33d458727061d6c07948706c729416bf473d9d5"
+        },
+        {
+            "policy_id": "POL-004",
+            "policy_name": "retention_policy.pdf",
+            "knowledge_file": "outputs/knowledge/retention_policy_knowledge.json",
+            "normalized_file": "outputs/normalized_obligations/retention_policy_normalized.json",
+            "text_file": "outputs/extracted_text/retention_policy.txt",
+            "embedding_model": "BAAI/bge-small-en-v1.5",
+            "embedding_dimension": 384,
+            "obligation_count": 4,
+            "created_at": "2026-07-11T16:14:02.246717Z",
+            "updated_at": "2026-07-11T16:14:02.246717Z",
+            "status": "ACTIVE",
+            "checksum": "c7780d927e369aa15ec50e451ea39aa9cd122806d33cd2fd5f28b45ec183c850"
         },
         {
             "policy_id": "POL-002",
@@ -40,8 +54,8 @@
             "embedding_model": "BAAI/bge-small-en-v1.5",
             "embedding_dimension": 384,
             "obligation_count": 1,
-            "created_at": "2026-07-11T15:11:11.101919Z",
-            "updated_at": "2026-07-11T15:11:11.101919Z",
+            "created_at": "2026-07-11T16:14:02.507603Z",
+            "updated_at": "2026-07-11T16:14:02.507603Z",
             "status": "ACTIVE",
             "checksum": "d6534186806eda89a55f6e0f7e87bb46017ffdbb80cad83cb58bca661d80907d"
         }

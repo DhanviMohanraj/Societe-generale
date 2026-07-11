@@ -2,12 +2,13 @@
     "index_version": "1.0",
     "embedding_model": "BAAI/bge-small-en-v1.5",
     "vector_dimension": 384,
-    "total_vectors": 11,
+    "total_vectors": 15,
     "policies_indexed": [
         "POL-001",
         "POL-002",
-        "POL-003"
+        "POL-003",
+        "POL-004"
     ],
     "created_at": "2026-07-11T11:06:10.499683Z",
-    "updated_at": "2026-07-11T15:11:11.224344Z"
+    "updated_at": "2026-07-11T16:14:03.249016Z"
 }

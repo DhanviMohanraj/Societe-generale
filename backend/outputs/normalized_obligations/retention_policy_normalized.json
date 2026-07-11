@@ -1,0 +1,42 @@
+[
+    {
+        "subject": "Financial Records",
+        "action": "Retain",
+        "object": "For 7 Years",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Data Retention",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Personal Data",
+        "action": "Delete",
+        "object": "Immediately Upon Verified User Request",
+        "condition": "unless legal obligations require retention",
+        "frequency": "",
+        "strength": "Recommended",
+        "topic": "Data Retention",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Backup Files",
+        "action": "Retain",
+        "object": "For One Year",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Data Retention",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Archived Data",
+        "action": "Encrypt",
+        "object": "",
+        "condition": "",
+        "frequency": "",
+        "strength": "Recommended",
+        "topic": "Data Retention",
+        "confidence": 1.0
+    }
+]

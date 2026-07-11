@@ -13,9 +13,18 @@
             "conflict_count": 1,
             "duplicate_count": 4,
             "overlap_count": 0,
-            "average_confidence": 1.0,
+            "average_confidence": 0.98,
             "relationship_count": 5,
             "risk_score": 86,
+            "topic_count": 1
+        },
+        "POL-004": {
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "average_confidence": 1.0,
+            "relationship_count": 0,
+            "risk_score": 100,
             "topic_count": 1
         },
         "POL-002": {
@@ -129,6 +138,46 @@
             "duplicate_count": 1,
             "overlap_count": 0
         },
+        "POL-004_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-004",
+            "canonical_text": "Financial Records Retain For 7 Years",
+            "topic": "Data Retention",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-004_OBL-002": {
+            "obligation_id": "OBL-002",
+            "policy_id": "POL-004",
+            "canonical_text": "Personal Data Delete Immediately Upon Verified User Request unless legal obligations require retention",
+            "topic": "Data Retention",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-004_OBL-003": {
+            "obligation_id": "OBL-003",
+            "policy_id": "POL-004",
+            "canonical_text": "Backup Files Retain For One Year",
+            "topic": "Data Retention",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-004_OBL-004": {
+            "obligation_id": "OBL-004",
+            "policy_id": "POL-004",
+            "canonical_text": "Archived Data Encrypt",
+            "topic": "Data Retention",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
         "POL-002_OBL-001": {
             "obligation_id": "OBL-001",
             "policy_id": "POL-002",
@@ -141,6 +190,12 @@
         }
     },
     "topic_metrics": {
+        "TOPIC_DATA_RETENTION": {
+            "topic_name": "Data Retention",
+            "obligation_count": 4,
+            "policy_count": 1,
+            "conflict_count": 0
+        },
         "TOPIC_CLOUD_SECURITY": {
             "topic_name": "Cloud Security",
             "obligation_count": 4,
@@ -169,8 +224,8 @@
             "target_node_id": "POL-003_OBL-003",
             "severity": "LOW",
             "confidence": 0.95,
-            "reason": "Both obligations enhance security by adding layers of protection, but they target different aspects: multi-factor authentication versus password management. Enforcing both does not conflict and can significantly improve cloud account security.",
-            "recommendation": "Adopt both policies to strengthen security controls for all cloud accounts."
+            "reason": "Both obligations enhance security by adding layers of authentication and credential management, but they target different aspects: MFA adds an additional verification step to logins, while using a password manager ensures secure storage of credentials.",
+            "recommendation": "Implement both controls for a layered security approach."
         },
         {
             "analysis_id": "ANL-002",
@@ -180,8 +235,8 @@
             "target_node_id": "POL-002_OBL-001",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and do not provide any additional or conflicting information.",
-            "recommendation": "No action is required as the obligations are duplicates and can be consolidated into a single policy for clarity."
+            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
+            "recommendation": "Consolidate both requirements into a single policy."
         },
         {
             "analysis_id": "ANL-003",
@@ -191,8 +246,8 @@
             "target_node_id": "POL-001_OBL-002",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
-            "recommendation": "Retain as duplicate and consolidate into a single policy for clarity."
+            "reason": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and do not provide any additional or conflicting information.",
+            "recommendation": "Consolidate both requirements into a single policy for clarity."
         },
         {
             "analysis_id": "ANL-004",
@@ -202,8 +257,8 @@
             "target_node_id": "POL-002_OBL-001",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and frequency.",
-            "recommendation": "No action required as both obligations are redundant."
+            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
+            "recommendation": "Retain as a single requirement for clarity and simplicity."
         },
         {
             "analysis_id": "ANL-005",
@@ -212,9 +267,9 @@
             "source_node_id": "POL-001_OBL-003",
             "target_node_id": "POL-001_OBL-004",
             "severity": "CRITICAL",
-            "confidence": 1.0,
-            "reason": "Both obligations are directly contradictory and pertain to the sensitive issue of password sharing, which is a significant security risk.",
-            "recommendation": "Align both requirements by establishing a clear policy that prohibits password sharing among employees and across any entities."
+            "confidence": 0.95,
+            "reason": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk. Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access.",
+            "recommendation": "Revoke both obligations as they are conflicting and pose significant security risks. Implement a strong password policy that discourages sharing passwords and mandates the use of secure authentication methods."
         },
         {
             "analysis_id": "ANL-006",
@@ -223,9 +278,9 @@
             "source_node_id": "POL-001_OBL-005",
             "target_node_id": "POL-001_OBL-006",
             "severity": "LOW",
-            "confidence": 1.0,
-            "reason": "Both obligations are identical, requiring MFA for users without any additional or differing conditions.",
-            "recommendation": "Consolidate both requirements into a single policy statement."
+            "confidence": 0.95,
+            "reason": "Both obligations are identical, requiring MFA for users, hence they are duplicates.",
+            "recommendation": "Consolidate both requirements into a single policy obligation."
         }
     ]
 }

@@ -1,13 +1,13 @@
 {
-    "generated_at": "2026-07-11T15:17:44.909643Z",
-    "overall_governance_score": 92,
+    "generated_at": "2026-07-11T16:21:50.424858Z",
+    "overall_governance_score": 94,
     "overall_risk_level": "LOW",
-    "total_policies": 3,
-    "total_obligations": 11,
+    "total_policies": 4,
+    "total_obligations": 15,
     "critical_conflicts": 1,
     "duplicate_requirements": 4,
-    "graph_density": 0.0791,
-    "average_ai_confidence": 0.9917,
+    "graph_density": 0.0591,
+    "average_ai_confidence": 0.975,
     "high_risk_policies": 1,
     "top_recommendations": [
         "Immediately review conflicting security policies.",
@@ -40,7 +40,7 @@
             "duplicate_count": 4,
             "overlap_count": 0,
             "critical_conflicts": 1,
-            "average_ai_confidence": 1.0,
+            "average_ai_confidence": 0.98,
             "recommendation_priority": "CRITICAL",
             "recommendations": [
                 "Immediately review conflicting security policies.",
@@ -48,6 +48,22 @@
                 "Expand policy coverage."
             ],
             "obligation_count": 6
+        },
+        {
+            "policy_id": "POL-004",
+            "policy_name": "retention_policy.pdf",
+            "governance_score": 100,
+            "risk_level": "LOW",
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "critical_conflicts": 0,
+            "average_ai_confidence": 1.0,
+            "recommendation_priority": "LOW",
+            "recommendations": [
+                "Expand policy coverage."
+            ],
+            "obligation_count": 4
         },
         {
             "policy_id": "POL-002",
