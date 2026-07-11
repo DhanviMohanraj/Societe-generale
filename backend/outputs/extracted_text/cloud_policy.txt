@@ -1,0 +1,10 @@
+CLOUD SECURITY POLICY
+Version: 2.0
+Last Reviewed: March 2025
+Purpose
+Security controls for all cloud-hosted systems.
+Policy Statements
+1. Cloud-hosted systems shall not require periodic password rotation.
+2. Multi-factor authentication must be enforced for every cloud account.
+3. Password managers should be used for storing credentials.
+4. Cloud administrators must review privileged accounts every month.

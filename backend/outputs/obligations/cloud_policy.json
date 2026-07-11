@@ -1,0 +1,42 @@
+[
+    {
+        "subject": "Cloud-hosted systems",
+        "action": "shall not require periodic password rotation",
+        "object": "",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "CLOUD SECURITY POLICY",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Every cloud account",
+        "action": "must enforce multi-factor authentication",
+        "object": "",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "CLOUD SECURITY POLICY",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Credentials",
+        "action": "should store using password managers",
+        "object": "for every cloud account",
+        "condition": "",
+        "frequency": "",
+        "strength": "Recommended",
+        "topic": "CLOUD SECURITY POLICY",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Cloud administrators",
+        "action": "must review",
+        "object": "privileged accounts",
+        "condition": "every month",
+        "frequency": "Monthly",
+        "strength": "Mandatory",
+        "topic": "CLOUD SECURITY POLICY",
+        "confidence": 1.0
+    }
+]

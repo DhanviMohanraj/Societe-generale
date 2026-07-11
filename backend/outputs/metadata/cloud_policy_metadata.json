@@ -1,0 +1,10 @@
+{
+    "policy_id": "POL-003",
+    "policy_name": "cloud_policy.pdf",
+    "obligation_count": 4,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_dimension": 384,
+    "knowledge_file": "outputs/knowledge/cloud_policy_knowledge.json",
+    "created_at": "2026-07-11T11:12:22.876924Z",
+    "updated_at": "2026-07-11T11:12:23.599508Z"
+}

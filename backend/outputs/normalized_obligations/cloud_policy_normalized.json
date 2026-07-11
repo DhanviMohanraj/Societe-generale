@@ -1,0 +1,42 @@
+[
+    {
+        "subject": "Cloud Systems",
+        "action": "Rotate",
+        "object": "",
+        "condition": "",
+        "frequency": "",
+        "strength": "Prohibited",
+        "topic": "Cloud Security",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Every Cloud Account",
+        "action": "Must Enforce Multi-Factor Authentication",
+        "object": "",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Cloud Security",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Credentials",
+        "action": "Should Store Using Password Managers",
+        "object": "For Every Cloud Account",
+        "condition": "",
+        "frequency": "",
+        "strength": "Recommended",
+        "topic": "Cloud Security",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Cloud Administrators",
+        "action": "Must Review",
+        "object": "Privileged Accounts",
+        "condition": "every month",
+        "frequency": "Monthly",
+        "strength": "Mandatory",
+        "topic": "Cloud Security",
+        "confidence": 1.0
+    }
+]
