@@ -2,6 +2,11 @@
     "password_policy.pdf": {
         "policy_id": "POL-001",
         "policy_name": "password_policy.pdf",
-        "created_at": "2026-07-11T04:46:28.317164Z"
+        "obligation_count": 6,
+        "embedding_model": "BAAI/bge-small-en-v1.5",
+        "embedding_dimension": 384,
+        "knowledge_file": "outputs/knowledge/password_policy_knowledge.json",
+        "created_at": "2026-07-11T04:46:28.317164Z",
+        "updated_at": "2026-07-11T06:12:26.390324Z"
     }
 }
