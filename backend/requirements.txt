@@ -8,4 +8,5 @@ torch
 numpy
 faiss-cpu
 networkx
-
+pydantic>=2.7,<3.0
+scipy>=1.11
