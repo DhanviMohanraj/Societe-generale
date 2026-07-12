@@ -1,0 +1,10 @@
+{
+    "policy_id": "POL-006",
+    "policy_name": "encryption_policy.pdf",
+    "obligation_count": 4,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_dimension": 384,
+    "knowledge_file": "outputs/knowledge/encryption_policy_knowledge.json",
+    "created_at": "2026-07-12T05:52:00.653124Z",
+    "updated_at": "2026-07-12T05:52:01.868280Z"
+}

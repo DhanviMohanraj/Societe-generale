@@ -8,12 +8,22 @@
         "priority": "LOW"
     },
     {
+        "policy_id": "POL-006",
+        "policy_name": "encryption_policy.pdf",
+        "recommendations": [
+            "Resolve high-severity policy conflicts to prevent operational drift.",
+            "Expand policy coverage."
+        ],
+        "priority": "HIGH"
+    },
+    {
         "policy_id": "POL-005",
         "policy_name": "legacy_policy.pdf",
         "recommendations": [
+            "Resolve high-severity policy conflicts to prevent operational drift.",
             "Expand policy coverage."
         ],
-        "priority": "LOW"
+        "priority": "HIGH"
     },
     {
         "policy_id": "POL-001",

@@ -9,13 +9,22 @@
             "risk_score": 100,
             "topic_count": 1
         },
-        "POL-005": {
-            "conflict_count": 0,
+        "POL-006": {
+            "conflict_count": 1,
             "duplicate_count": 0,
             "overlap_count": 0,
-            "average_confidence": 1.0,
-            "relationship_count": 0,
-            "risk_score": 100,
+            "average_confidence": 0.95,
+            "relationship_count": 1,
+            "risk_score": 90,
+            "topic_count": 1
+        },
+        "POL-005": {
+            "conflict_count": 1,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "average_confidence": 0.95,
+            "relationship_count": 1,
+            "risk_score": 90,
             "topic_count": 1
         },
         "POL-001": {
@@ -40,7 +49,7 @@
             "conflict_count": 0,
             "duplicate_count": 2,
             "overlap_count": 0,
-            "average_confidence": 0.975,
+            "average_confidence": 1.0,
             "relationship_count": 2,
             "risk_score": 98,
             "topic_count": 1
@@ -87,6 +96,46 @@
             "duplicate_count": 0,
             "overlap_count": 0
         },
+        "POL-006_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-006",
+            "canonical_text": "All Internal Communications Must Use Tls 1.3 Or Higher",
+            "topic": "Encryption And Protocol Policy",
+            "relationship_count": 1,
+            "conflict_count": 1,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-006_OBL-002": {
+            "obligation_id": "OBL-002",
+            "policy_id": "POL-006",
+            "canonical_text": "Sensitive Data Must Be Encrypted In Transit And At Rest Using Aes-256",
+            "topic": "Encryption And Protocol Policy",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-006_OBL-003": {
+            "obligation_id": "OBL-003",
+            "policy_id": "POL-006",
+            "canonical_text": "Encryption Keys Must Be Rotated Every 12 Months",
+            "topic": "Encryption And Protocol Policy",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-006_OBL-004": {
+            "obligation_id": "OBL-004",
+            "policy_id": "POL-006",
+            "canonical_text": "Md5 And Sha-1 Hashing Algorithms Are Strictly For Digital Signatures",
+            "topic": "Encryption And Protocol Policy",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
         "POL-005_OBL-001": {
             "obligation_id": "OBL-001",
             "policy_id": "POL-005",
@@ -102,8 +151,8 @@
             "policy_id": "POL-005",
             "canonical_text": "Tls 1.0 Acceptable For Internal Communication",
             "topic": "Legacy Infrastructure",
-            "relationship_count": 0,
-            "conflict_count": 0,
+            "relationship_count": 1,
+            "conflict_count": 1,
             "duplicate_count": 0,
             "overlap_count": 0
         },
@@ -243,7 +292,7 @@
             "topic_name": "Legacy Infrastructure",
             "obligation_count": 4,
             "policy_count": 1,
-            "conflict_count": 0
+            "conflict_count": 1
         },
         "TOPIC_DATA_RETENTION": {
             "topic_name": "Data Retention",
@@ -256,6 +305,12 @@
             "obligation_count": 1,
             "policy_count": 1,
             "conflict_count": 0
+        },
+        "TOPIC_ENCRYPTION_AND_PROTOCOL_POLICY": {
+            "topic_name": "Encryption And Protocol Policy",
+            "obligation_count": 4,
+            "policy_count": 1,
+            "conflict_count": 1
         },
         "TOPIC_CLOUD_SECURITY": {
             "topic_name": "Cloud Security",
@@ -279,63 +334,74 @@
             "target_node_id": "POL-003_OBL-003",
             "severity": "LOW",
             "confidence": 0.95,
-            "reason": "Both obligations enhance security but serve different purposes. Multi-factor authentication adds an extra layer of verification for accessing the cloud account, while using password managers helps secure and manage credentials more effectively.",
-            "recommendation": "Retain both requirements as complementary controls to improve overall security posture."
+            "reason": "Multi-factor authentication (MFA) adds an additional layer of security beyond using password managers, and a password manager can enhance credential management without necessarily enabling MFA directly. Both policies serve different but important aspects of cloud security.",
+            "recommendation": "Consolidate both requirements into a comprehensive policy that leverages password managers for secure credential storage while also enforcing multi-factor authentication."
         },
         {
             "analysis_id": "ANL-002",
             "match_id": "MATCH-002",
-            "relationship": "DUPLICATE",
-            "source_node_id": "POL-001_OBL-001",
-            "target_node_id": "POL-002_OBL-001",
-            "severity": "LOW",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-006_OBL-001",
+            "target_node_id": "POL-005_OBL-002",
+            "severity": "HIGH",
             "confidence": 0.95,
-            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and therefore duplicate.",
-            "recommendation": "Consolidate both requirements into a single policy statement for clarity."
+            "reason": "Obligation A mandates the use of TLS 1.3 or higher, while Obligation B accepts TLS 1.0 for internal communication. These requirements are in direct conflict and cannot both be true simultaneously.",
+            "recommendation": "Align the conflicting requirements to a single standard that meets current security standards, such as requiring TLS 1.3 or higher."
         },
         {
             "analysis_id": "ANL-003",
             "match_id": "MATCH-003",
             "relationship": "DUPLICATE",
             "source_node_id": "POL-001_OBL-001",
-            "target_node_id": "POL-001_OBL-002",
+            "target_node_id": "POL-002_OBL-001",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and requirement.",
-            "recommendation": "Consolidate both requirements into a single policy for clarity and consistency."
+            "reason": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and therefore a duplicate.",
+            "recommendation": "Consolidate both requirements into a single policy for clarity."
         },
         {
             "analysis_id": "ANL-004",
             "match_id": "MATCH-004",
             "relationship": "DUPLICATE",
-            "source_node_id": "POL-001_OBL-002",
-            "target_node_id": "POL-002_OBL-001",
+            "source_node_id": "POL-001_OBL-001",
+            "target_node_id": "POL-001_OBL-002",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and scope.",
-            "recommendation": "No action is necessary as the obligations are redundant."
+            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
+            "recommendation": "Consolidate both requirements into a single policy for clarity and enforcement."
         },
         {
             "analysis_id": "ANL-005",
             "match_id": "MATCH-005",
-            "relationship": "CONFLICT",
-            "source_node_id": "POL-001_OBL-003",
-            "target_node_id": "POL-001_OBL-004",
-            "severity": "CRITICAL",
+            "relationship": "DUPLICATE",
+            "source_node_id": "POL-001_OBL-002",
+            "target_node_id": "POL-002_OBL-001",
+            "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches. Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A.",
-            "recommendation": "Revise both obligations to align with industry best practices by prohibiting password sharing across the board. Consider implementing multi-factor authentication (MFA) and secure password management solutions to enhance overall security."
+            "reason": "Both obligations are identical, requiring the same action without any additional or differing requirements.",
+            "recommendation": "Consolidate both requirements into a single policy statement."
         },
         {
             "analysis_id": "ANL-006",
             "match_id": "MATCH-006",
+            "relationship": "CONFLICT",
+            "source_node_id": "POL-001_OBL-003",
+            "target_node_id": "POL-001_OBL-004",
+            "severity": "CRITICAL",
+            "confidence": 0.95,
+            "reason": "Both obligations involve the sharing of passwords, which is a security risk. Obligation A is poorly worded but implies that passwords should be shared, while B explicitly states this for employees. This creates confusion and could lead to unauthorized access.",
+            "recommendation": "Align both policies by removing the ambiguity in Obligation A or clarifying that no password sharing is allowed. Implement strong password management practices instead."
+        },
+        {
+            "analysis_id": "ANL-007",
+            "match_id": "MATCH-007",
             "relationship": "DUPLICATE",
             "source_node_id": "POL-001_OBL-005",
             "target_node_id": "POL-001_OBL-006",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations are identical, requiring MFA for users, hence they are duplicates.",
-            "recommendation": "Consolidate both requirements into a single policy."
+            "reason": "Both obligations require MFA for users, which is identical and redundant.",
+            "recommendation": "Consolidate both requirements into a single policy obligation to avoid redundancy."
         }
     ]
 }

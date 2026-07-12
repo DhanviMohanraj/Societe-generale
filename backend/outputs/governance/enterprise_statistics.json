@@ -1,21 +1,22 @@
 {
     "largest_connected_component": 16,
-    "average_degree": 3.2,
-    "graph_density": 0.0471,
+    "average_degree": 3.1905,
+    "graph_density": 0.0389,
     "topic_distribution": {
         "Legacy Infrastructure": 4,
         "Data Retention": 4,
         "Password Rotation Policy": 1,
+        "Encryption And Protocol Policy": 4,
         "Cloud Security": 4,
         "Password Security": 6
     },
     "relationship_distribution": {
-        "CONFLICTS_WITH": 1,
+        "CONFLICTS_WITH": 2,
         "DUPLICATES": 4,
         "OVERLAPS": 0,
         "COMPLEMENTS": 1
     },
-    "conflict_density": 0.0526,
-    "duplicate_density": 0.2105,
-    "average_relationships_per_policy": 5.0
+    "conflict_density": 0.087,
+    "duplicate_density": 0.1739,
+    "average_relationships_per_policy": 6.0
 }

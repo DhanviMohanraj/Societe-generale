@@ -1,0 +1,42 @@
+[
+    {
+        "subject": "All internal communications",
+        "action": "must use",
+        "object": "TLS 1.3 or higher",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Encryption and Protocol Policy",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Sensitive data",
+        "action": "must be encrypted",
+        "object": "in transit and at rest using AES-256",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Encryption and Protocol Policy",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Encryption keys",
+        "action": "must be rotated",
+        "object": "every 12 months",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Encryption and Protocol Policy",
+        "confidence": 1.0
+    },
+    {
+        "subject": "MD5 and SHA-1 hashing algorithms",
+        "action": "are strictly prohibited",
+        "object": "for digital signatures",
+        "condition": "",
+        "frequency": "",
+        "strength": "Prohibited",
+        "topic": "Encryption and Protocol Policy",
+        "confidence": 1.0
+    }
+]
