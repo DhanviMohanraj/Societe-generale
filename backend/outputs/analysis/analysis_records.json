@@ -12,15 +12,15 @@
         "relationship": "COMPLEMENTARY",
         "confidence": 0.95,
         "severity": "LOW",
-        "reason": "Both obligations enhance security by adding layers of authentication and credential management, but they target different aspects: MFA adds an additional verification step to logins, while using a password manager ensures secure storage of credentials.",
-        "recommendation": "Implement both controls for a layered security approach.",
+        "reason": "Both obligations enhance security but serve different purposes. Multi-factor authentication adds an extra layer of verification for accessing the cloud account, while using password managers helps secure and manage credentials more effectively.",
+        "recommendation": "Retain both requirements as complementary controls to improve overall security posture.",
         "reasoning_trace": {
             "semantic_similarity": 0.8149560689926147,
-            "llm_observation": "Comparing OBL-002 and OBL-003.",
-            "decision_basis": "Both obligations enhance security by adding layers of authentication and credential management, but they target different aspects: MFA adds an additional verification step to logins, while using a password manager ensures secure storage of credentials."
+            "llm_observation": "Both obligations enhance security but serve different purposes.",
+            "decision_basis": "Multi-factor authentication adds an extra layer of verification for accessing the cloud account, while using password managers helps secure and manage credentials more effectively."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:15:48.871860Z",
+        "created_at": "2026-07-12T04:07:01.721712Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -34,17 +34,17 @@
         "target_text": "Employees Rotate Passwords Every 90 Days",
         "semantic_similarity": 1.0,
         "relationship": "DUPLICATE",
-        "confidence": 1.0,
+        "confidence": 0.95,
         "severity": "LOW",
-        "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
-        "recommendation": "Consolidate both requirements into a single policy.",
+        "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and therefore duplicate.",
+        "recommendation": "Consolidate both requirements into a single policy statement for clarity.",
         "reasoning_trace": {
             "semantic_similarity": 1.0,
             "llm_observation": "Comparing OBL-001 and OBL-001.",
-            "decision_basis": "Both obligations are identical, requiring employees to rotate passwords every 90 days."
+            "decision_basis": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and therefore duplicate."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:17:14.977475Z",
+        "created_at": "2026-07-12T04:07:39.191570Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -60,15 +60,15 @@
         "relationship": "DUPLICATE",
         "confidence": 1.0,
         "severity": "LOW",
-        "reason": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and do not provide any additional or conflicting information.",
-        "recommendation": "Consolidate both requirements into a single policy for clarity.",
+        "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and requirement.",
+        "recommendation": "Consolidate both requirements into a single policy for clarity and consistency.",
         "reasoning_trace": {
             "semantic_similarity": 1.0,
             "llm_observation": "Comparing OBL-001 and OBL-002.",
-            "decision_basis": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and do not provide any additional or conflicting information."
+            "decision_basis": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and requirement."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:17:54.595722Z",
+        "created_at": "2026-07-12T04:08:16.269131Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -84,15 +84,15 @@
         "relationship": "DUPLICATE",
         "confidence": 1.0,
         "severity": "LOW",
-        "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
-        "recommendation": "Retain as a single requirement for clarity and simplicity.",
+        "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and scope.",
+        "recommendation": "No action is necessary as the obligations are redundant.",
         "reasoning_trace": {
             "semantic_similarity": 1.0,
             "llm_observation": "Comparing OBL-002 and OBL-001.",
-            "decision_basis": "Both obligations are identical, requiring employees to rotate passwords every 90 days."
+            "decision_basis": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and scope."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:18:29.225703Z",
+        "created_at": "2026-07-12T04:08:51.864481Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -106,17 +106,17 @@
         "target_text": "Employees Share Passwords with anyone",
         "semantic_similarity": 0.9100350737571716,
         "relationship": "CONFLICT",
-        "confidence": 0.95,
+        "confidence": 1.0,
         "severity": "CRITICAL",
-        "reason": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk. Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access.",
-        "recommendation": "Revoke both obligations as they are conflicting and pose significant security risks. Implement a strong password policy that discourages sharing passwords and mandates the use of secure authentication methods.",
+        "reason": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches. Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A.",
+        "recommendation": "Revise both obligations to align with industry best practices by prohibiting password sharing across the board. Consider implementing multi-factor authentication (MFA) and secure password management solutions to enhance overall security.",
         "reasoning_trace": {
             "semantic_similarity": 0.9100350737571716,
-            "llm_observation": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk.",
-            "decision_basis": "Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access."
+            "llm_observation": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches.",
+            "decision_basis": "Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:20:24.612477Z",
+        "created_at": "2026-07-12T04:10:02.319130Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -130,17 +130,17 @@
         "target_text": "Users Require MFA",
         "semantic_similarity": 1.0,
         "relationship": "DUPLICATE",
-        "confidence": 0.95,
+        "confidence": 1.0,
         "severity": "LOW",
         "reason": "Both obligations are identical, requiring MFA for users, hence they are duplicates.",
-        "recommendation": "Consolidate both requirements into a single policy obligation.",
+        "recommendation": "Consolidate both requirements into a single policy.",
         "reasoning_trace": {
             "semantic_similarity": 1.0,
             "llm_observation": "Comparing OBL-005 and OBL-006.",
             "decision_basis": "Both obligations are identical, requiring MFA for users, hence they are duplicates."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:21:49.659490Z",
+        "created_at": "2026-07-12T04:10:32.881357Z",
         "status": "PENDING_ANALYSIS"
     }
 ]

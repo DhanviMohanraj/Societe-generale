@@ -11,7 +11,7 @@
         "target_text": "Credentials Should Store Using Password Managers For Every Cloud Account",
         "similarity": 0.8149560689926147,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.597192Z",
+        "retrieved_at": "2026-07-12T04:06:15.680306Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -26,7 +26,7 @@
         "target_text": "Employees Rotate Passwords Every 90 Days",
         "similarity": 1.0,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.602415Z",
+        "retrieved_at": "2026-07-12T04:06:15.681307Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -41,7 +41,7 @@
         "target_text": "Employees Rotate Passwords Every 90 Days",
         "similarity": 1.0,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.602415Z",
+        "retrieved_at": "2026-07-12T04:06:15.682401Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -56,7 +56,7 @@
         "target_text": "Employees Rotate Passwords Every 90 Days",
         "similarity": 1.0,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.602415Z",
+        "retrieved_at": "2026-07-12T04:06:15.682401Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -71,7 +71,7 @@
         "target_text": "Employees Share Passwords with anyone",
         "similarity": 0.9100350737571716,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.602415Z",
+        "retrieved_at": "2026-07-12T04:06:15.682401Z",
         "status": "PENDING_ANALYSIS"
     },
     {
@@ -86,7 +86,7 @@
         "target_text": "Users Require MFA",
         "similarity": 1.0,
         "embedding_model": "BAAI/bge-small-en-v1.5",
-        "retrieved_at": "2026-07-11T16:14:03.602415Z",
+        "retrieved_at": "2026-07-12T04:06:15.682401Z",
         "status": "PENDING_ANALYSIS"
     }
 ]

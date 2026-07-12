@@ -1,0 +1,42 @@
+[
+    {
+        "subject": "Windows Server 2012",
+        "action": "Used For",
+        "object": "Application Servers",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Legacy Infrastructure",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Tls 1.0",
+        "action": "Acceptable For",
+        "object": "Internal Communication",
+        "condition": "",
+        "frequency": "",
+        "strength": "Recommended",
+        "topic": "Legacy Infrastructure",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Sha-1 Certificates",
+        "action": "May Be Used For",
+        "object": "Legacy Systems",
+        "condition": "",
+        "frequency": "",
+        "strength": "Optional",
+        "topic": "Legacy Infrastructure",
+        "confidence": 1.0
+    },
+    {
+        "subject": "Backup Tapes",
+        "action": "Must Be Stored",
+        "object": "Off-Site",
+        "condition": "",
+        "frequency": "",
+        "strength": "Mandatory",
+        "topic": "Legacy Infrastructure",
+        "confidence": 1.0
+    }
+]

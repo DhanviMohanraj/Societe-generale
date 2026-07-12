@@ -9,11 +9,20 @@
             "risk_score": 100,
             "topic_count": 1
         },
+        "POL-005": {
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0,
+            "average_confidence": 1.0,
+            "relationship_count": 0,
+            "risk_score": 100,
+            "topic_count": 1
+        },
         "POL-001": {
             "conflict_count": 1,
             "duplicate_count": 4,
             "overlap_count": 0,
-            "average_confidence": 0.98,
+            "average_confidence": 0.99,
             "relationship_count": 5,
             "risk_score": 86,
             "topic_count": 1
@@ -31,7 +40,7 @@
             "conflict_count": 0,
             "duplicate_count": 2,
             "overlap_count": 0,
-            "average_confidence": 1.0,
+            "average_confidence": 0.975,
             "relationship_count": 2,
             "risk_score": 98,
             "topic_count": 1
@@ -73,6 +82,46 @@
             "policy_id": "POL-003",
             "canonical_text": "Cloud Administrators Must Review Privileged Accounts every month Monthly",
             "topic": "Cloud Security",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-005_OBL-001": {
+            "obligation_id": "OBL-001",
+            "policy_id": "POL-005",
+            "canonical_text": "Windows Server 2012 Used For Application Servers",
+            "topic": "Legacy Infrastructure",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-005_OBL-002": {
+            "obligation_id": "OBL-002",
+            "policy_id": "POL-005",
+            "canonical_text": "Tls 1.0 Acceptable For Internal Communication",
+            "topic": "Legacy Infrastructure",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-005_OBL-003": {
+            "obligation_id": "OBL-003",
+            "policy_id": "POL-005",
+            "canonical_text": "Sha-1 Certificates May Be Used For Legacy Systems",
+            "topic": "Legacy Infrastructure",
+            "relationship_count": 0,
+            "conflict_count": 0,
+            "duplicate_count": 0,
+            "overlap_count": 0
+        },
+        "POL-005_OBL-004": {
+            "obligation_id": "OBL-004",
+            "policy_id": "POL-005",
+            "canonical_text": "Backup Tapes Must Be Stored Off-Site",
+            "topic": "Legacy Infrastructure",
             "relationship_count": 0,
             "conflict_count": 0,
             "duplicate_count": 0,
@@ -190,9 +239,21 @@
         }
     },
     "topic_metrics": {
+        "TOPIC_LEGACY_INFRASTRUCTURE": {
+            "topic_name": "Legacy Infrastructure",
+            "obligation_count": 4,
+            "policy_count": 1,
+            "conflict_count": 0
+        },
         "TOPIC_DATA_RETENTION": {
             "topic_name": "Data Retention",
             "obligation_count": 4,
+            "policy_count": 1,
+            "conflict_count": 0
+        },
+        "TOPIC_PASSWORD_ROTATION_POLICY": {
+            "topic_name": "Password Rotation Policy",
+            "obligation_count": 1,
             "policy_count": 1,
             "conflict_count": 0
         },
@@ -207,12 +268,6 @@
             "obligation_count": 6,
             "policy_count": 1,
             "conflict_count": 1
-        },
-        "TOPIC_PASSWORD_ROTATION_POLICY": {
-            "topic_name": "Password Rotation Policy",
-            "obligation_count": 1,
-            "policy_count": 1,
-            "conflict_count": 0
         }
     },
     "relationship_metrics": [
@@ -224,8 +279,8 @@
             "target_node_id": "POL-003_OBL-003",
             "severity": "LOW",
             "confidence": 0.95,
-            "reason": "Both obligations enhance security by adding layers of authentication and credential management, but they target different aspects: MFA adds an additional verification step to logins, while using a password manager ensures secure storage of credentials.",
-            "recommendation": "Implement both controls for a layered security approach."
+            "reason": "Both obligations enhance security but serve different purposes. Multi-factor authentication adds an extra layer of verification for accessing the cloud account, while using password managers helps secure and manage credentials more effectively.",
+            "recommendation": "Retain both requirements as complementary controls to improve overall security posture."
         },
         {
             "analysis_id": "ANL-002",
@@ -234,9 +289,9 @@
             "source_node_id": "POL-001_OBL-001",
             "target_node_id": "POL-002_OBL-001",
             "severity": "LOW",
-            "confidence": 1.0,
-            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
-            "recommendation": "Consolidate both requirements into a single policy."
+            "confidence": 0.95,
+            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and therefore duplicate.",
+            "recommendation": "Consolidate both requirements into a single policy statement for clarity."
         },
         {
             "analysis_id": "ANL-003",
@@ -246,8 +301,8 @@
             "target_node_id": "POL-001_OBL-002",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations require employees to rotate their passwords every 90 days, which are identical in content and do not provide any additional or conflicting information.",
-            "recommendation": "Consolidate both requirements into a single policy for clarity."
+            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and requirement.",
+            "recommendation": "Consolidate both requirements into a single policy for clarity and consistency."
         },
         {
             "analysis_id": "ANL-004",
@@ -257,8 +312,8 @@
             "target_node_id": "POL-002_OBL-001",
             "severity": "LOW",
             "confidence": 1.0,
-            "reason": "Both obligations are identical, requiring employees to rotate passwords every 90 days.",
-            "recommendation": "Retain as a single requirement for clarity and simplicity."
+            "reason": "Both obligations require employees to rotate passwords every 90 days, which are identical in content and scope.",
+            "recommendation": "No action is necessary as the obligations are redundant."
         },
         {
             "analysis_id": "ANL-005",
@@ -267,9 +322,9 @@
             "source_node_id": "POL-001_OBL-003",
             "target_node_id": "POL-001_OBL-004",
             "severity": "CRITICAL",
-            "confidence": 0.95,
-            "reason": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk. Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access.",
-            "recommendation": "Revoke both obligations as they are conflicting and pose significant security risks. Implement a strong password policy that discourages sharing passwords and mandates the use of secure authentication methods."
+            "confidence": 1.0,
+            "reason": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches. Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A.",
+            "recommendation": "Revise both obligations to align with industry best practices by prohibiting password sharing across the board. Consider implementing multi-factor authentication (MFA) and secure password management solutions to enhance overall security."
         },
         {
             "analysis_id": "ANL-006",
@@ -278,9 +333,9 @@
             "source_node_id": "POL-001_OBL-005",
             "target_node_id": "POL-001_OBL-006",
             "severity": "LOW",
-            "confidence": 0.95,
+            "confidence": 1.0,
             "reason": "Both obligations are identical, requiring MFA for users, hence they are duplicates.",
-            "recommendation": "Consolidate both requirements into a single policy obligation."
+            "recommendation": "Consolidate both requirements into a single policy."
         }
     ]
 }

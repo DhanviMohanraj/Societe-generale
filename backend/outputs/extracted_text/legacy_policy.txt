@@ -1,0 +1,10 @@
+LEGACY INFRASTRUCTURE POLICY
+Version: 1.0
+Last Reviewed: January 2020
+Purpose
+Legacy server management.
+Policy Statements
+1. Windows Server 2012 should be used for application servers.
+2. TLS 1.0 is acceptable for internal communication.
+3. SHA-1 certificates may be used for legacy systems.
+4. Backup tapes must be stored off-site.

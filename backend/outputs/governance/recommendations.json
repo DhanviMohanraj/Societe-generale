@@ -8,6 +8,14 @@
         "priority": "LOW"
     },
     {
+        "policy_id": "POL-005",
+        "policy_name": "legacy_policy.pdf",
+        "recommendations": [
+            "Expand policy coverage."
+        ],
+        "priority": "LOW"
+    },
+    {
         "policy_id": "POL-001",
         "policy_name": "password_policy.pdf",
         "recommendations": [

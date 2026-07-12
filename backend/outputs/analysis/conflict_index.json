@@ -10,17 +10,17 @@
         "target_text": "Employees Share Passwords with anyone",
         "semantic_similarity": 0.9100350737571716,
         "relationship": "CONFLICT",
-        "confidence": 0.95,
+        "confidence": 1.0,
         "severity": "CRITICAL",
-        "reason": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk. Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access.",
-        "recommendation": "Revoke both obligations as they are conflicting and pose significant security risks. Implement a strong password policy that discourages sharing passwords and mandates the use of secure authentication methods.",
+        "reason": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches. Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A.",
+        "recommendation": "Revise both obligations to align with industry best practices by prohibiting password sharing across the board. Consider implementing multi-factor authentication (MFA) and secure password management solutions to enhance overall security.",
         "reasoning_trace": {
             "semantic_similarity": 0.9100350737571716,
-            "llm_observation": "Obligation A and Obligation B both require that employees share passwords with anyone, which is a security risk.",
-            "decision_basis": "Sharing passwords compromises the integrity of password-based authentication mechanisms, potentially leading to unauthorized access."
+            "llm_observation": "Obligation A is an unreasonable and unsafe practice that explicitly allows sharing passwords with anyone, which directly conflicts with typical password security policies that discourage or prohibit such behavior to prevent unauthorized access and breaches.",
+            "decision_basis": "Obligation B specifies employees are not allowed to share passwords with anyone, aligning with standard security practices but contradicting the permissive nature of Obligation A."
         },
         "llm_model": "qwen2.5:7b",
-        "created_at": "2026-07-11T16:20:24.612477Z",
+        "created_at": "2026-07-12T04:10:02.319130Z",
         "status": "PENDING_ANALYSIS"
     }
 ]
